@@ -162,9 +162,9 @@ class Weather extends Entity
     }
 
     /**
-     * @return DataPoint
+     * @return CurrentlyDataPoint
      */
-    public function getCurrently(): ?DataPoint
+    public function getCurrently(): ?CurrentlyDataPoint
     {
         return $this->currently;
     }
