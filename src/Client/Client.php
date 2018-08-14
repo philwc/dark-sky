@@ -19,8 +19,6 @@ abstract class Client implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    private const TTL = 60;
-
     /**
      * @var string
      */
@@ -49,9 +47,10 @@ abstract class Client implements LoggerAwareInterface
 
     /**
      * @param string $uri
+     * @param int $ttl
      * @return Weather
      */
-    protected function makeCall(string $uri): ?Weather
+    protected function makeCall(string $uri, int $ttl): ?Weather
     {
         $cacheKey = $this->getCacheKey($uri);
 
@@ -69,9 +68,9 @@ abstract class Client implements LoggerAwareInterface
         $data = json_decode($response->getBody()->getContents(), true);
 
         if ($this->cache !== null) {
-            $this->logger->debug('Caching result for ' . self::TTL . 's');
+            $this->logger->debug('Caching result for ' . $ttl . 's');
             try {
-                $this->cache->set($cacheKey, $data, self::TTL);
+                $this->cache->set($cacheKey, $data, $ttl);
             } catch (InvalidArgumentException $e) {
                 $this->logger->info('Cache error: ' . $e->getMessage());
             }

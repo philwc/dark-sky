@@ -16,6 +16,20 @@ class TimeMachineClient extends Client
     private const URI = 'https://api.darksky.net/forecast/%s/%s,%s,%s';
 
     /**
+     * @var int
+     * 24 Hours
+     */
+    private $ttl = 86400;
+
+    /**
+     * @param int $ttl
+     */
+    public function setTTL(int $ttl): void
+    {
+        $this->ttl = $ttl;
+    }
+
+    /**
      * @param Latitude $latitude
      * @param Longitude $longitude
      * @param \DateTimeInterface $dateTime
@@ -24,7 +38,8 @@ class TimeMachineClient extends Client
     public function retrieve(Latitude $latitude, Longitude $longitude, \DateTimeInterface $dateTime): ?Weather
     {
         return $this->makeCall(
-            sprintf(self::URI, $this->secretKey, $latitude->toFloat(), $longitude->toFloat(), $dateTime->format('U'))
+            sprintf(self::URI, $this->secretKey, $latitude->toFloat(), $longitude->toFloat(), $dateTime->format('U')),
+            $this->ttl
         );
     }
 

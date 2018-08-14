@@ -6,7 +6,10 @@ To get started, you will need to get a secret key from Dark Sky: https://darksky
 
 This package makes use of HTTP adapters to connect to the API. Two are included out of the box,
 a Guzzle adapter and a Simple adapter (using `file_get_contents`). If you have specialised
-connection needs, simply implement the `ClientAdapterInterface` and pass to the client factory.
+connection needs, simply implement the `ClientAdapterInterface` and pass to the client factory. 
+If a ClientAdapter is not specified, the package will make use of the `GuzzleAdapter` if 
+[Guzzle](http://guzzlephp.org/) is available, falling back to the `SimpleAdapter` (using `file_get_contents`)
+if not.
 
 This package is also able to make use of a PSR-16 caching adapter to cache calls from the API.
 Simply pass a relevant cache service (see https://packagist.org/providers/psr/simple-cache-implementation) 
@@ -14,7 +17,7 @@ to the client factory to use. No caching is provided out of the box.
 
 Finally, this is able to make use of a PSR-3 logger. Set your logger using `ClientFactory::setLogger($log);`.
 
-This is all shown in the Advanced Usage below.
+This is all shown in the [Advanced Usage](#advanced-usage) section below.
 
 ## Usage
 
@@ -25,6 +28,10 @@ composer require philwc/dark-sky
 ```
 
 ### Simple Usage
+
+#### Forecast Client
+To use the `ForecastClient` set `philwc\DarkSky\ClientFactory::FORECAST` on the `ClientFactory`:
+ 
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -38,8 +45,42 @@ $weather = $client->simpleRetrieve(53.4808, 2.2426);
 echo $weather->getCurrently()->getSummary() . PHP_EOL;
 echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL;
 ```
+#### Time Machine Client
+
+To use the `TimeMachineClient` set  `philwc\DarkSky\ClientFactory::TIME_MACHINE` on the `ClientFactory`:
+
+```php
+$client = philwc\DarkSky\ClientFactory::get(
+    philwc\DarkSky\ClientFactory::TIME_MACHINE, 
+    getenv('SECRET_KEY')
+);
+```
+
+The calls to `retrieve` and `simpleRetrieve` now require a timestamp:
+
+```php
+$weather = $client->simpleRetrieve(53.4808, 2.2426, 1514764800);
+$weather = $client->retrieve(new Latitude(53.4808), new Longitude(2.2426), new DateTimeImmutable('2018-01-01 00:00:00'));
+```
+
+#### `simpleRetrieve` vs. `retrieve`
+
+In addition to using the `simpleRetrieve` method on the client, 
+you can use the `retrieve` method. This requires strict typing to validate 
+your values. Internally, `simpleRetrieve` uses `retrieve`. This may be useful if
+you want to handle invalid Latitude/Longitude further up in your code.
+
+```php
+...
+$weather = $client->retrieve(new Latitude(53.4808), new Longitude(2.2426));
+
+echo $weather->getCurrently()->getSummary() . PHP_EOL;
+echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL;
+``` 
 
 ### Advanced Usage
+It is possible to pass both a PSR-16 cache adapter, as well as a PSR-3 logger into the `ClientFactory`
+
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -67,30 +108,25 @@ echo $weather->getCurrently()->getSummary() . PHP_EOL;
 echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL;
 ```
 
-In addition to using the `simpleRetrieve` method on the client, 
-you can use the `retrieve` method. This requires strict typing to validate 
-your values. Internally, `simpleRetrieve` uses `retrieve`.
+### Caching
 
-```php
-...
-$weather = $client->retrieve(new Latitude(53.4808), new Longitude(2.2426));
+It is possible to set the TTL for the cache independently for each client. On the client, 
+use `setTTL` to specify. By default, the following TTLs are set:
 
-echo $weather->getCurrently()->getSummary() . PHP_EOL;
-echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL;
-``` 
-
-Finally, to use the `TimeMachineClient` set the appropriate option on the `ClientFactory`
+- `ForecastClient` - 60s
+- `TimeMachineClient` - 86400s (24 hours)
 
 ```php
 $client = philwc\DarkSky\ClientFactory::get(
-    philwc\DarkSky\ClientFactory::TIME_MACHINE, 
-    getenv('SECRET_KEY')
+    philwc\DarkSky\ClientFactory::FORECAST,
+    getenv('SECRET_KEY'),
+    new Cache\Adapter\PHPArray\ArrayCachePool()
 );
-```
 
-The calls to `retrieve` and `simpleRetrieve` now require a timestamp:
+$client->setTTL(120);
 
-```php
-$weather = $client->simpleRetrieve(53.4808, 2.2426, 1514764800);
-$weather = $client->retrieve(new Latitude(53.4808), new Longitude(2.2426), new DateTimeImmutable('2018-01-01 00:00:00'));
+$weather = $client->simpleRetrieve(53.4808, 2.2426);
+
+// This second call will now be cached for 120s
+$weather = $client->simpleRetrieve(53.4808, 2.2426);
 ```

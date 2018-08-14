@@ -16,6 +16,19 @@ class ForecastClient extends Client
     private const URI = 'https://api.darksky.net/forecast/%s/%s,%s';
 
     /**
+     * @var int
+     */
+    private $ttl = 60;
+
+    /**
+     * @param int $ttl
+     */
+    public function setTTL(int $ttl): void
+    {
+        $this->ttl = $ttl;
+    }
+
+    /**
      * @param Latitude $latitude
      * @param Longitude $longitude
      * @return Weather
@@ -23,7 +36,8 @@ class ForecastClient extends Client
     public function retrieve(Latitude $latitude, Longitude $longitude): ?Weather
     {
         return $this->makeCall(
-            sprintf(self::URI, $this->secretKey, $latitude->toFloat(), $longitude->toFloat())
+            sprintf(self::URI, $this->secretKey, $latitude->toFloat(), $longitude->toFloat()),
+            $this->ttl
         );
     }
 
