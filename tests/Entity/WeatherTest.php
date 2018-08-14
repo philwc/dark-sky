@@ -111,7 +111,7 @@ class WeatherTest extends TestCase
     {
         $hourly = $weather->getHourly();
         $testData = $forecastData['hourly'];
-        $this->assertEquals($testData['icon'], $hourly->getIcon());
+        $this->assertEquals($testData['icon'], $hourly->getIconName());
         $this->assertEquals($testData['summary'], $hourly->getSummary());
 
         /** @var HourlyDataPoint $data */
@@ -120,7 +120,7 @@ class WeatherTest extends TestCase
 
         $this->assertEquals($firstTestData['time'], $data->getTime()->format('U'));
         $this->assertEquals($firstTestData['summary'], $data->getSummary());
-        $this->assertEquals($firstTestData['icon'], $data->getIcon());
+        $this->assertEquals($firstTestData['icon'], $data->getIconName());
         $this->assertEquals($firstTestData['precipIntensity'], $data->getPrecipitation()->getIntensity());
         $this->assertEquals($firstTestData['precipProbability'], $data->getPrecipitation()->getProbability());
         $this->assertEquals($firstTestData['precipType'], $data->getPrecipitation()->getType());
@@ -146,7 +146,7 @@ class WeatherTest extends TestCase
     {
         $minutely = $weather->getMinutely();
         $testData = $forecastData['minutely'];
-        $this->assertEquals($testData['icon'], $minutely->getIcon());
+        $this->assertEquals($testData['icon'], $minutely->getIconName());
         $this->assertEquals($testData['summary'], $minutely->getSummary());
 
         /** @var MinutelyDataPoint $data */
@@ -171,12 +171,12 @@ class WeatherTest extends TestCase
         /** @var CurrentlyDataPoint $currently */
         $currently = $weather->getCurrently();
         $testData = $forecastData['currently'];
-        $this->assertEquals($testData['icon'], $currently->getIcon());
+        $this->assertEquals($testData['icon'], $currently->getIconName());
         $this->assertEquals($testData['summary'], $currently->getSummary());
 
         $this->assertEquals($testData['time'], $currently->getTime()->format('U'));
         $this->assertEquals($testData['summary'], $currently->getSummary());
-        $this->assertEquals($testData['icon'], $currently->getIcon());
+        $this->assertEquals($testData['icon'], $currently->getIconName());
         $this->assertEquals($testData['precipIntensity'], $currently->getPrecipitation()->getIntensity());
         $this->assertEquals($testData['precipIntensityError'], $currently->getPrecipitation()->getIntensityError());
         $this->assertEquals($testData['precipProbability'], $currently->getPrecipitation()->getProbability());
@@ -205,7 +205,7 @@ class WeatherTest extends TestCase
     {
         $daily = $weather->getDaily();
         $testData = $forecastData['daily'];
-        $this->assertEquals($testData['icon'], $daily->getIcon());
+        $this->assertEquals($testData['icon'], $daily->getIconName());
         $this->assertEquals($testData['summary'], $daily->getSummary());
 
         /** @var DailyDataPoint $data */
@@ -214,7 +214,7 @@ class WeatherTest extends TestCase
 
         $this->assertEquals($firstTestData['time'], $data->getTime()->format('U'));
         $this->assertEquals($firstTestData['summary'], $data->getSummary());
-        $this->assertEquals($firstTestData['icon'], $data->getIcon());
+        $this->assertEquals($firstTestData['icon'], $data->getIconName());
         $this->assertEquals($firstTestData['sunriseTime'], $data->getSunriseTime()->format('U'));
         $this->assertEquals($firstTestData['sunsetTime'], $data->getSunsetTime()->format('U'));
         $this->assertEquals($firstTestData['moonPhase'], $data->getMoonPhase());
