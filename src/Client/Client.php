@@ -102,6 +102,6 @@ abstract class Client implements LoggerAwareInterface
      */
     private function getCacheKey($uri): string
     {
-        return str_replace(['{', '}', '(', ')', '/', '\\', '@', ':'], '-', $uri);
+        return sha1((string)$uri);
     }
 }
