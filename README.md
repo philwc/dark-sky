@@ -1,5 +1,7 @@
 # Dark Sky API Client
 
+[![Build Status](https://travis-ci.org/philwc/dark-sky.svg?branch=master)](https://travis-ci.org/philwc/dark-sky)
+
 This is a simple client to talk to the Dark Sky API.
 
 To get started, you will need to get a secret key from Dark Sky: https://darksky.net/dev/account.
