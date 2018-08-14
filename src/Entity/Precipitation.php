@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\Entity;
 
-use philwc\DarkSky\ClientAdapter\NullClientAdapter;
 use philwc\DarkSky\Value\PrecipProbability;
 use philwc\DarkSky\Value\PrecipType;
 
@@ -11,7 +10,7 @@ use philwc\DarkSky\Value\PrecipType;
  * Class Precipitation
  * @package philwc\DarkSky\Entity
  */
-class Precipitation implements EntityInterface
+class Precipitation extends Entity
 {
     /**
      * @var float

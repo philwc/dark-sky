@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\Entity;
 
-use philwc\DarkSky\ClientAdapter\NullClientAdapter;
 use philwc\DarkSky\DateTimeHelper;
 use philwc\DarkSky\Exception\InvalidDateFieldException;
 use philwc\DarkSky\Value\CloudCover;
 use philwc\DarkSky\Value\Humidity;
 use philwc\DarkSky\Value\Icon;
 use philwc\DarkSky\Value\Visibility;
-use philwc\DarkSky\Value\Bearing;
 
 /**
  * Class DataPoint
@@ -67,24 +65,14 @@ abstract class DataPoint extends Entity
     private $visibility;
 
     /**
-     * @var Bearing
-     */
-    private $windBearing;
-
-    /**
-     * @var float
-     */
-    private $windGust;
-
-    /**
-     * @var float
-     */
-    private $windSpeed;
-
-    /**
      * @var Precipitation
      */
     private $precipitation;
+
+    /**
+     * @var Wind
+     */
+    private $wind;
 
     /**
      * @return array
@@ -103,6 +91,7 @@ abstract class DataPoint extends Entity
     protected static function extend(DataPoint $self, array $data): DataPoint
     {
         $self->precipitation = Precipitation::fromArray($data);
+        $self->wind = Wind::fromArray($data);
 
         if (array_key_exists('cloudCover', $data)) {
             $self->cloudCover = new CloudCover($data['cloudCover']);
@@ -138,18 +127,6 @@ abstract class DataPoint extends Entity
 
         if (array_key_exists('visibility', $data)) {
             $self->visibility = new Visibility($data['visibility']);
-        }
-
-        if (array_key_exists('windBearing', $data)) {
-            $self->windBearing = new Bearing($data['windBearing']);
-        }
-
-        if (array_key_exists('windGust', $data)) {
-            $self->windGust = (float)$data['windGust'];
-        }
-
-        if (array_key_exists('windSpeed', $data)) {
-            $self->windSpeed = (float)$data['windSpeed'];
         }
 
         /** @var \DateTimeZone $timezone */
@@ -264,37 +241,18 @@ abstract class DataPoint extends Entity
     }
 
     /**
-     * @return int
-     */
-    public function getWindBearing(): ?int
-    {
-        if ($this->windBearing) {
-            return $this->windBearing->toInt();
-        }
-        return null;
-    }
-
-    /**
-     * @return float
-     */
-    public function getWindGust(): ?float
-    {
-        return $this->windGust;
-    }
-
-    /**
-     * @return float
-     */
-    public function getWindSpeed(): ?float
-    {
-        return $this->windSpeed;
-    }
-
-    /**
      * @return Precipitation
      */
     public function getPrecipitation(): Precipitation
     {
         return $this->precipitation;
+    }
+
+    /**
+     * @return Wind
+     */
+    public function getWind(): Wind
+    {
+        return $this->wind;
     }
 }

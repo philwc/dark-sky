@@ -9,7 +9,7 @@ use philwc\DarkSky\DateTimeHelper;
  * Class Temperature
  * @package philwc\DarkSky\Entity
  */
-class Temperature implements EntityInterface
+class Temperature extends Entity
 {
     /**
      * @var float
@@ -71,7 +71,6 @@ class Temperature implements EntityInterface
                 $timezone
             );
         }
-
 
         if (array_key_exists('temperature', $data)) {
             $self->temperature = (float)$data['temperature'];

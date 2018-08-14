@@ -9,7 +9,7 @@ use philwc\DarkSky\DateTimeHelper;
  * Class ApparentTemperature
  * @package philwc\DarkSky\Entity
  */
-class ApparentTemperature implements EntityInterface
+class ApparentTemperature extends Entity
 {
     /**
      * @var float

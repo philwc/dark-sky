@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace philwc\DarkSky\Entity\DataPoint;
 
 use philwc\DarkSky\Entity\DataPoint;
-use philwc\DarkSky\Value\Bearing;
+use philwc\DarkSky\Entity\Storm;
 
 /**
  * Class CurrentlyDataPoint
@@ -13,14 +13,9 @@ use philwc\DarkSky\Value\Bearing;
 class CurrentlyDataPoint extends DataPoint
 {
     /**
-     * @var Bearing
+     * @var Storm
      */
-    private $nearestStormBearing;
-
-    /**
-     * @var int
-     */
-    private $nearestStormDistance;
+    private $storm;
 
     /**
      * @var float
@@ -43,14 +38,7 @@ class CurrentlyDataPoint extends DataPoint
         self::validate($data, self::getRequiredFields());
 
         $self = new self();
-
-        if (array_key_exists('nearestStormBearing', $data)) {
-            $self->nearestStormBearing = new Bearing($data['nearestStormBearing']);
-        }
-
-        if (array_key_exists('nearestStormDistance', $data)) {
-            $self->nearestStormDistance = (int)$data['nearestStormDistance'];
-        }
+        $self->storm = Storm::fromArray($data);
 
         if (array_key_exists('apparentTemperature', $data)) {
             $self->apparentTemperature = (float)$data['apparentTemperature'];
@@ -62,22 +50,6 @@ class CurrentlyDataPoint extends DataPoint
 
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return self::extend($self, $data);
-    }
-
-    /**
-     * @return int
-     */
-    public function getNearestStormBearing(): ?int
-    {
-        return $this->nearestStormBearing->toInt();
-    }
-
-    /**
-     * @return int
-     */
-    public function getNearestStormDistance(): ?int
-    {
-        return $this->nearestStormDistance;
     }
 
     /**
@@ -94,5 +66,13 @@ class CurrentlyDataPoint extends DataPoint
     public function getTemperature(): ?float
     {
         return $this->temperature;
+    }
+
+    /**
+     * @return Storm
+     */
+    public function getStorm(): Storm
+    {
+        return $this->storm;
     }
 }
