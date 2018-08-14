@@ -79,11 +79,26 @@ class DataBlock extends Entity
     }
 
     /**
-     * @return string
+     * @return null|string
+     */
+    public function getIconName(): ?string
+    {
+        if ($this->icon) {
+            return $this->icon->toString();
+        }
+        return null;
+    }
+
+    /**
+     * @return null|string
      */
     public function getIcon(): ?string
     {
-        return $this->icon->toString();
+        if ($this->icon) {
+            return $this->icon->getIcon();
+        }
+
+        return null;
     }
 
     /**

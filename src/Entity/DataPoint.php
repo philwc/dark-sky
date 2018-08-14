@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\Entity;
 
+use philwc\DarkSky\ClientAdapter\NullClientAdapter;
 use philwc\DarkSky\DateTimeHelper;
 use philwc\DarkSky\Exception\InvalidDateFieldException;
 use philwc\DarkSky\Value\CloudCover;
@@ -163,7 +164,10 @@ abstract class DataPoint extends Entity
      */
     public function getCloudCover(): ?float
     {
-        return $this->cloudCover->toFloat();
+        if ($this->cloudCover) {
+            return $this->cloudCover->toFloat();
+        }
+        return null;
     }
 
     /**
@@ -179,15 +183,33 @@ abstract class DataPoint extends Entity
      */
     public function getHumidity(): ?float
     {
-        return $this->humidity->toFloat();
+        if ($this->humidity) {
+            return $this->humidity->toFloat();
+        }
+        return null;
     }
 
     /**
-     * @return string
+     * @return null|string
+     */
+    public function getIconName(): ?string
+    {
+        if ($this->icon) {
+            return $this->icon->toString();
+        }
+        return null;
+    }
+
+    /**
+     * @return null|string
      */
     public function getIcon(): ?string
     {
-        return $this->icon->toString();
+        if ($this->icon) {
+            return $this->icon->getIcon();
+        }
+
+        return null;
     }
 
     /**
@@ -235,7 +257,10 @@ abstract class DataPoint extends Entity
      */
     public function getVisibility(): ?float
     {
-        return $this->visibility->toFloat();
+        if ($this->visibility) {
+            return $this->visibility->toFloat();
+        }
+        return null;
     }
 
     /**
@@ -243,7 +268,10 @@ abstract class DataPoint extends Entity
      */
     public function getWindBearing(): ?int
     {
-        return $this->windBearing->toInt();
+        if ($this->windBearing) {
+            return $this->windBearing->toInt();
+        }
+        return null;
     }
 
     /**

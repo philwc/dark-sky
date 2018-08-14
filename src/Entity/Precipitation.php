@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\Entity;
 
+use philwc\DarkSky\ClientAdapter\NullClientAdapter;
 use philwc\DarkSky\Value\PrecipProbability;
 use philwc\DarkSky\Value\PrecipType;
 
@@ -80,7 +81,10 @@ class Precipitation implements EntityInterface
      */
     public function getProbability(): ?float
     {
-        return $this->precipProbability->toFloat();
+        if ($this->precipProbability) {
+            return $this->precipProbability->toFloat();
+        }
+        return null;
     }
 
     /**
@@ -88,6 +92,9 @@ class Precipitation implements EntityInterface
      */
     public function getType(): ?string
     {
-        return $this->precipType->toString();
+        if ($this->precipType) {
+            return $this->precipType->toString();
+        }
+        return null;
     }
 }
