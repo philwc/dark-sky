@@ -29,22 +29,49 @@ use PHPUnit\Framework\TestCase;
  * @covers \philwc\DarkSky\EntityCollection\HourlyDataPointCollection
  * @covers \philwc\DarkSky\EntityCollection\MinutelyDataPointCollection
  * @covers \philwc\DarkSky\Entity\DataPoint
- * @covers \philwc\DarkSky\Value\Bearing
- * @covers \philwc\DarkSky\Value\CloudCover
- * @covers \philwc\DarkSky\Value\Humidity
- * @covers \philwc\DarkSky\Value\Icon
- * @covers \philwc\DarkSky\Value\Latitude
- * @covers \philwc\DarkSky\Value\Longitude
- * @covers \philwc\DarkSky\Value\MoonPhase
- * @covers \philwc\DarkSky\Value\PrecipProbability
+ * @covers \philwc\DarkSky\Value\Float\CloudCover
+ * @covers \philwc\DarkSky\Value\Float\Humidity
+ * @covers \philwc\DarkSky\Value\String\Icon
+ * @covers \philwc\DarkSky\Value\Float\Latitude
+ * @covers \philwc\DarkSky\Value\Float\Longitude
+ * @covers \philwc\DarkSky\Value\Float\MoonPhase
+ * @covers \philwc\DarkSky\Value\Float\PrecipProbability
  * @covers \philwc\DarkSky\Entity\Entity
- * @covers \philwc\DarkSky\Value\PrecipType
- * @covers \philwc\DarkSky\Value\Source
- * @covers \philwc\DarkSky\Value\Visibility
+ * @covers \philwc\DarkSky\Value\String\PrecipType
+ * @covers \philwc\DarkSky\Value\String\Source
+ * @covers \philwc\DarkSky\Value\Float\Visibility
  * @covers \philwc\DarkSky\Exception\MissingDataException
  * @covers \philwc\DarkSky\Entity\Temperature
  * @covers \philwc\DarkSky\Entity\ApparentTemperature
  * @covers \philwc\DarkSky\Entity\Precipitation
+ * @covers \philwc\DarkSky\Entity\NearestStorm
+ * @covers \philwc\DarkSky\Entity\Wind
+ * @covers \philwc\DarkSky\Entity\ApparentTemperature
+ * @covers \philwc\DarkSky\Value\Float\DewPoint
+ * @covers \philwc\DarkSky\Value\Float\NearestStation
+ * @covers \philwc\DarkSky\Value\Float\Ozone
+ * @covers \philwc\DarkSky\Value\Float\PrecipIntensity
+ * @covers \philwc\DarkSky\Value\Float\ApparentTemperature
+ * @covers \philwc\DarkSky\Value\Float\FloatValue
+ * @covers \philwc\DarkSky\Value\Float\PrecipIntensityError
+ * @covers \philwc\DarkSky\Value\Float\PrecipIntensityMax
+ * @covers \philwc\DarkSky\Value\Float\Temperature
+ * @covers \philwc\DarkSky\Value\Float\TemperatureHigh
+ * @covers \philwc\DarkSky\Value\Float\TemperatureLow
+ * @covers \philwc\DarkSky\Value\Float\WindGust
+ * @covers \philwc\DarkSky\Value\Float\WindSpeed
+ * @covers \philwc\DarkSky\Value\Float\ApparentTemperatureHigh
+ * @covers \philwc\DarkSky\Value\Float\ApparentTemperatureLow
+ * @covers \philwc\DarkSky\Value\Float\Pressure
+ * @covers \philwc\DarkSky\Value\Int\IntValue
+ * @covers \philwc\DarkSky\Value\Int\NearestStormBearing
+ * @covers \philwc\DarkSky\Value\Int\NearestStormDistance
+ * @covers \philwc\DarkSky\Value\Int\UvIndex
+ * @covers \philwc\DarkSky\Value\Int\WindBearing
+ * @covers \philwc\DarkSky\Value\String\StringValue
+ * @covers \philwc\DarkSky\Value\String\Units
+ * @covers \philwc\DarkSky\Value\Value
+ *
  */
 class WeatherTest extends TestCase
 {
@@ -91,8 +118,8 @@ class WeatherTest extends TestCase
     public function testWeather(array $data): void
     {
         $weather = Weather::fromArray($data);
-        $this->assertEquals($data['latitude'], $weather->getLatitude());
-        $this->assertEquals($data['longitude'], $weather->getLongitude());
+        $this->assertEquals($data['latitude'], $weather->getLatitude()->toFloat());
+        $this->assertEquals($data['longitude'], $weather->getLongitude()->toFloat());
         $this->assertEquals($data['timezone'], $weather->getTimezone()->getName());
 
         $this->hourlyTest($weather, $data);
@@ -111,7 +138,7 @@ class WeatherTest extends TestCase
     {
         $hourly = $weather->getHourly();
         $testData = $forecastData['hourly'];
-        $this->assertEquals($testData['icon'], $hourly->getIconName());
+        $this->assertEquals($testData['icon'], $hourly->getIcon()->toString());
         $this->assertEquals($testData['summary'], $hourly->getSummary());
 
         /** @var HourlyDataPoint $data */
@@ -120,22 +147,22 @@ class WeatherTest extends TestCase
 
         $this->assertEquals($firstTestData['time'], $data->getTime()->format('U'));
         $this->assertEquals($firstTestData['summary'], $data->getSummary());
-        $this->assertEquals($firstTestData['icon'], $data->getIconName());
-        $this->assertEquals($firstTestData['precipIntensity'], $data->getPrecipitation()->getIntensity());
-        $this->assertEquals($firstTestData['precipProbability'], $data->getPrecipitation()->getProbability());
-        $this->assertEquals($firstTestData['precipType'], $data->getPrecipitation()->getType());
-        $this->assertEquals($firstTestData['temperature'], $data->getTemperature());
-        $this->assertEquals($firstTestData['apparentTemperature'], $data->getApparentTemperature());
-        $this->assertEquals($firstTestData['dewPoint'], $data->getDewPoint());
-        $this->assertEquals($firstTestData['humidity'], $data->getHumidity());
-        $this->assertEquals($firstTestData['pressure'], $data->getPressure());
-        $this->assertEquals($firstTestData['windSpeed'], $data->getWindSpeed());
-        $this->assertEquals($firstTestData['windGust'], $data->getWindGust());
-        $this->assertEquals($firstTestData['windBearing'], $data->getWindBearing());
-        $this->assertEquals($firstTestData['cloudCover'], $data->getCloudCover());
-        $this->assertEquals($firstTestData['uvIndex'], $data->getUvIndex());
-        $this->assertEquals($firstTestData['visibility'], $data->getVisibility());
-        $this->assertEquals($firstTestData['ozone'], $data->getOzone());
+        $this->assertEquals($firstTestData['icon'], $data->getIcon()->toString());
+        $this->assertEquals($firstTestData['precipIntensity'], $data->getPrecipitation()->getIntensity()->toFloat());
+        $this->assertEquals($firstTestData['precipProbability'], $data->getPrecipitation()->getProbability()->toFloat());
+        $this->assertEquals($firstTestData['precipType'], $data->getPrecipitation()->getType()->toString());
+        $this->assertEquals($firstTestData['temperature'], $data->getTemperature()->toFloat());
+        $this->assertEquals($firstTestData['apparentTemperature'], $data->getApparentTemperature()->toFloat());
+        $this->assertEquals($firstTestData['dewPoint'], $data->getDewPoint()->toFloat());
+        $this->assertEquals($firstTestData['humidity'], $data->getHumidity()->toFloat());
+        $this->assertEquals($firstTestData['pressure'], $data->getPressure()->toFloat());
+        $this->assertEquals($firstTestData['windSpeed'], $data->getWind()->getSpeed()->toFloat());
+        $this->assertEquals($firstTestData['windGust'], $data->getWind()->getGust()->toFloat());
+        $this->assertEquals($firstTestData['windBearing'], $data->getWind()->getBearing()->toInt());
+        $this->assertEquals($firstTestData['cloudCover'] * 100, $data->getCloudCover()->toFloat());
+        $this->assertEquals($firstTestData['uvIndex'], $data->getUvIndex()->toInt());
+        $this->assertEquals($firstTestData['visibility'], $data->getVisibility()->toFloat());
+        $this->assertEquals($firstTestData['ozone'], $data->getOzone()->toFloat());
     }
 
     /**
@@ -146,7 +173,7 @@ class WeatherTest extends TestCase
     {
         $minutely = $weather->getMinutely();
         $testData = $forecastData['minutely'];
-        $this->assertEquals($testData['icon'], $minutely->getIconName());
+        $this->assertEquals($testData['icon'], $minutely->getIcon()->toString());
         $this->assertEquals($testData['summary'], $minutely->getSummary());
 
         /** @var MinutelyDataPoint $data */
@@ -154,12 +181,12 @@ class WeatherTest extends TestCase
         $firstTestData = $testData['data'][0];
 
         $this->assertEquals($firstTestData['time'], $data->getTime()->format('U'));
-        $this->assertEquals($firstTestData['precipIntensity'], $data->getPrecipitation()->getIntensity());
+        $this->assertEquals($firstTestData['precipIntensity'], $data->getPrecipitation()->getIntensity()->toFloat());
         $this->assertEquals(
             $firstTestData['precipProbability'],
-            $data->getPrecipitation()->getProbability()
+            $data->getPrecipitation()->getProbability()->toFloat()
         );
-        $this->assertEquals($firstTestData['precipType'], $data->getPrecipitation()->getType());
+        $this->assertEquals($firstTestData['precipType'], $data->getPrecipitation()->getType()->toString());
     }
 
     /**
@@ -171,30 +198,30 @@ class WeatherTest extends TestCase
         /** @var CurrentlyDataPoint $currently */
         $currently = $weather->getCurrently();
         $testData = $forecastData['currently'];
-        $this->assertEquals($testData['icon'], $currently->getIconName());
+        $this->assertEquals($testData['icon'], $currently->getIcon()->toString());
         $this->assertEquals($testData['summary'], $currently->getSummary());
 
         $this->assertEquals($testData['time'], $currently->getTime()->format('U'));
         $this->assertEquals($testData['summary'], $currently->getSummary());
-        $this->assertEquals($testData['icon'], $currently->getIconName());
-        $this->assertEquals($testData['precipIntensity'], $currently->getPrecipitation()->getIntensity());
-        $this->assertEquals($testData['precipIntensityError'], $currently->getPrecipitation()->getIntensityError());
-        $this->assertEquals($testData['precipProbability'], $currently->getPrecipitation()->getProbability());
-        $this->assertEquals($testData['precipType'], $currently->getPrecipitation()->getType());
-        $this->assertEquals($testData['temperature'], $currently->getTemperature());
-        $this->assertEquals($testData['apparentTemperature'], $currently->getApparentTemperature());
-        $this->assertEquals($testData['dewPoint'], $currently->getDewPoint());
-        $this->assertEquals($testData['humidity'], $currently->getHumidity());
-        $this->assertEquals($testData['pressure'], $currently->getPressure());
-        $this->assertEquals($testData['windSpeed'], $currently->getWindSpeed());
-        $this->assertEquals($testData['windGust'], $currently->getWindGust());
-        $this->assertEquals($testData['windBearing'], $currently->getWindBearing());
-        $this->assertEquals($testData['cloudCover'], $currently->getCloudCover());
-        $this->assertEquals($testData['uvIndex'], $currently->getUvIndex());
-        $this->assertEquals($testData['visibility'], $currently->getVisibility());
-        $this->assertEquals($testData['ozone'], $currently->getOzone());
-        $this->assertEquals($testData['nearestStormBearing'], $currently->getNearestStormBearing());
-        $this->assertEquals($testData['nearestStormDistance'], $currently->getNearestStormDistance());
+        $this->assertEquals($testData['icon'], $currently->getIcon()->toString());
+        $this->assertEquals($testData['precipIntensity'], $currently->getPrecipitation()->getIntensity()->toFloat());
+        $this->assertEquals($testData['precipIntensityError'], $currently->getPrecipitation()->getIntensityError()->toFloat());
+        $this->assertEquals($testData['precipProbability'], $currently->getPrecipitation()->getProbability()->toFloat());
+        $this->assertEquals($testData['precipType'], $currently->getPrecipitation()->getType()->toString());
+        $this->assertEquals($testData['temperature'], $currently->getTemperature()->toFloat());
+        $this->assertEquals($testData['apparentTemperature'], $currently->getApparentTemperature()->toFloat());
+        $this->assertEquals($testData['dewPoint'], $currently->getDewPoint()->toFloat());
+        $this->assertEquals($testData['humidity'], $currently->getHumidity()->toFloat());
+        $this->assertEquals($testData['pressure'], $currently->getPressure()->toFloat());
+        $this->assertEquals($testData['windSpeed'], $currently->getWind()->getSpeed()->toFloat());
+        $this->assertEquals($testData['windGust'], $currently->getWind()->getGust()->toFloat());
+        $this->assertEquals($testData['windBearing'], $currently->getWind()->getBearing()->toInt());
+        $this->assertEquals($testData['cloudCover'] * 100, $currently->getCloudCover()->toFloat());
+        $this->assertEquals($testData['uvIndex'], $currently->getUvIndex()->toInt());
+        $this->assertEquals($testData['visibility'], $currently->getVisibility()->toFloat());
+        $this->assertEquals($testData['ozone'], $currently->getOzone()->toFloat());
+        $this->assertEquals($testData['nearestStormBearing'], $currently->getNearestStorm()->getBearing()->toInt());
+        $this->assertEquals($testData['nearestStormDistance'], $currently->getNearestStorm()->getDistance()->toInt());
     }
 
     /**
@@ -205,7 +232,7 @@ class WeatherTest extends TestCase
     {
         $daily = $weather->getDaily();
         $testData = $forecastData['daily'];
-        $this->assertEquals($testData['icon'], $daily->getIconName());
+        $this->assertEquals($testData['icon'], $daily->getIcon()->toString());
         $this->assertEquals($testData['summary'], $daily->getSummary());
 
         /** @var DailyDataPoint $data */
@@ -214,44 +241,50 @@ class WeatherTest extends TestCase
 
         $this->assertEquals($firstTestData['time'], $data->getTime()->format('U'));
         $this->assertEquals($firstTestData['summary'], $data->getSummary());
-        $this->assertEquals($firstTestData['icon'], $data->getIconName());
+        $this->assertEquals($firstTestData['icon'], $data->getIcon()->toString());
         $this->assertEquals($firstTestData['sunriseTime'], $data->getSunriseTime()->format('U'));
         $this->assertEquals($firstTestData['sunsetTime'], $data->getSunsetTime()->format('U'));
-        $this->assertEquals($firstTestData['moonPhase'], $data->getMoonPhase());
-        $this->assertEquals($firstTestData['precipIntensity'], $data->getPrecipitation()->getIntensity());
-        $this->assertEquals($firstTestData['precipIntensityMax'], $data->getPrecipIntensityMax());
+        $this->assertEquals($firstTestData['moonPhase'], $data->getMoonPhase()->toFloat());
+        $this->assertEquals($firstTestData['precipIntensity'], $data->getPrecipitation()->getIntensity()->toFloat());
+        $this->assertEquals($firstTestData['precipIntensityMax'], $data->getPrecipIntensityMax()->toFloat());
         $this->assertEquals($firstTestData['precipIntensityMaxTime'], $data->getPrecipIntensityMaxTime()->format('U'));
-        $this->assertEquals($firstTestData['precipProbability'], $data->getPrecipitation()->getProbability());
-        $this->assertEquals($firstTestData['precipType'], $data->getPrecipitation()->getType());
-        $this->assertEquals($firstTestData['temperatureHigh'], $data->getTemperature()->getHigh());
+        $this->assertEquals(
+            $firstTestData['precipProbability'],
+            $data->getPrecipitation()->getProbability()->toFloat()
+        );
+        $this->assertEquals($firstTestData['precipType'], $data->getPrecipitation()->getType()->toString());
+        $this->assertEquals($firstTestData['temperatureHigh'], $data->getTemperature()->getHigh()->toFloat());
         $this->assertEquals($firstTestData['temperatureHighTime'], $data->getTemperature()->getHighTime()->format('U'));
-        $this->assertEquals($firstTestData['temperatureLow'], $data->getTemperature()->getLow());
+        $this->assertEquals($firstTestData['temperatureLow'], $data->getTemperature()->getLow()->toFloat());
         $this->assertEquals($firstTestData['temperatureLowTime'], $data->getTemperature()->getLowTime()->format('U'));
-        $this->assertEquals($firstTestData['apparentTemperatureHigh'], $data->getApparentTemperature()->getHigh());
+        $this->assertEquals(
+            $firstTestData['apparentTemperatureHigh'],
+            $data->getApparentTemperature()->getHigh()->toFloat()
+        );
         $this->assertEquals(
             $firstTestData['apparentTemperatureHighTime'],
             $data->getApparentTemperature()->getHighTime()->format('U')
         );
         $this->assertEquals(
             $firstTestData['apparentTemperatureLow'],
-            $data->getApparentTemperature()->getLow()
+            $data->getApparentTemperature()->getLow()->toFloat()
         );
         $this->assertEquals(
             $firstTestData['apparentTemperatureLowTime'],
             $data->getApparentTemperature()->getLowTime()->format('U')
         );
-        $this->assertEquals($firstTestData['dewPoint'], $data->getDewPoint());
-        $this->assertEquals($firstTestData['humidity'], $data->getHumidity());
-        $this->assertEquals($firstTestData['pressure'], $data->getPressure());
-        $this->assertEquals($firstTestData['windSpeed'], $data->getWindSpeed());
-        $this->assertEquals($firstTestData['windGust'], $data->getWindGust());
+        $this->assertEquals($firstTestData['dewPoint'], $data->getDewPoint()->toFloat());
+        $this->assertEquals($firstTestData['humidity'], $data->getHumidity()->toFloat());
+        $this->assertEquals($firstTestData['pressure'], $data->getPressure()->toFloat());
+        $this->assertEquals($firstTestData['windSpeed'], $data->getWind()->getSpeed()->toFloat());
+        $this->assertEquals($firstTestData['windGust'], $data->getWind()->getGust()->toFloat());
         $this->assertEquals($firstTestData['windGustTime'], $data->getWindGustTime()->format('U'));
-        $this->assertEquals($firstTestData['windBearing'], $data->getWindBearing());
-        $this->assertEquals($firstTestData['cloudCover'], $data->getCloudCover());
-        $this->assertEquals($firstTestData['uvIndex'], $data->getUvIndex());
+        $this->assertEquals($firstTestData['windBearing'], $data->getWind()->getBearing()->toInt());
+        $this->assertEquals($firstTestData['cloudCover'] * 100, $data->getCloudCover()->toFloat());
+        $this->assertEquals($firstTestData['uvIndex'], $data->getUvIndex()->toInt());
         $this->assertEquals($firstTestData['uvIndexTime'], $data->getUvIndexTime()->format('U'));
-        $this->assertEquals($firstTestData['visibility'], $data->getVisibility());
-        $this->assertEquals($firstTestData['ozone'], $data->getOzone());
+        $this->assertEquals($firstTestData['visibility'], $data->getVisibility()->toFloat());
+        $this->assertEquals($firstTestData['ozone'], $data->getOzone()->toFloat());
     }
 
     /**
@@ -286,7 +319,7 @@ class WeatherTest extends TestCase
             $this->assertEquals($testData['sources'][$index], $source->toString());
         }
 
-        $this->assertEquals($testData['nearest-station'], $flags->getNearestStation());
-        $this->assertEquals($testData['units'], $flags->getUnits());
+        $this->assertEquals($testData['nearest-station'], $flags->getNearestStation()->toFloat());
+        $this->assertEquals($testData['units'], $flags->getUnits()->toString());
     }
 }

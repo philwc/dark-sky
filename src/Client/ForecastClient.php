@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace philwc\DarkSky\Client;
 
 use philwc\DarkSky\Entity\Weather;
-use philwc\DarkSky\Value\Latitude;
-use philwc\DarkSky\Value\Longitude;
+use philwc\DarkSky\Value\Float\Latitude;
+use philwc\DarkSky\Value\Float\Longitude;
+use philwc\DarkSky\Value\OptionalParameters;
 
 /**
  * Class ForecastClient
@@ -31,23 +32,34 @@ class ForecastClient extends Client
     /**
      * @param Latitude $latitude
      * @param Longitude $longitude
+     * @param OptionalParameters $optionalParameters
      * @return Weather
      */
-    public function retrieve(Latitude $latitude, Longitude $longitude): ?Weather
+    public function retrieve(
+        Latitude $latitude,
+        Longitude $longitude,
+        OptionalParameters $optionalParameters = null
+    ): ?Weather
     {
-        return $this->makeCall(
-            sprintf(self::URI, $this->secretKey, $latitude->toFloat(), $longitude->toFloat()),
-            $this->ttl
-        );
+        $url = sprintf(self::URI, $this->secretKey, $latitude->toFloat(), $longitude->toFloat());
+        return $this->makeCall($url, $this->ttl, $optionalParameters);
     }
 
     /**
      * @param float $latitude
      * @param float $longitude
+     * @param array $options
      * @return Weather
+     * @throws \Assert\AssertionFailedException
      */
-    public function simpleRetrieve(float $latitude, float $longitude): ?Weather
+    public function simpleRetrieve(float $latitude, float $longitude, array $options = []): ?Weather
     {
-        return $this->retrieve(new Latitude($latitude), new Longitude($longitude));
+        $optionalParameters = new OptionalParameters($options);
+
+        return $this->retrieve(
+            new Latitude($latitude, $optionalParameters->getUnits()),
+            new Longitude($longitude, $optionalParameters->getUnits()),
+            $optionalParameters
+        );
     }
 }

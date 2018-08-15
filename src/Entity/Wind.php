@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\Entity;
 
-use philwc\DarkSky\Value\Bearing;
+use philwc\DarkSky\Value\Float\WindSpeed;
+use philwc\DarkSky\Value\Float\WindGust;
+use philwc\DarkSky\Value\Int\WindBearing;
 
 /**
  * Class Wind
@@ -12,66 +14,64 @@ use philwc\DarkSky\Value\Bearing;
 class Wind extends Entity
 {
     /**
-     * @var Bearing
+     * @var WindBearing
      */
     private $windBearing;
 
     /**
-     * @var float
+     * @var WindGust
      */
     private $windGust;
 
     /**
-     * @var float
+     * @var WindSpeed
      */
     private $windSpeed;
 
     /**
      * @param array $data
-     * @return mixed
+     * @return Wind
+     * @throws \Assert\AssertionFailedException
      */
-    public static function fromArray(array $data)
+    public static function fromArray(array $data): self
     {
         $self = new self();
 
         if (array_key_exists('windBearing', $data)) {
-            $self->windBearing = new Bearing($data['windBearing']);
+            $self->windBearing = new WindBearing($data['windBearing'], $data['units']);
         }
 
         if (array_key_exists('windGust', $data)) {
-            $self->windGust = (float)$data['windGust'];
+            $self->windGust = new WindGust($data['windGust'], $data['units']);
         }
 
         if (array_key_exists('windSpeed', $data)) {
-            $self->windSpeed = (float)$data['windSpeed'];
+            $self->windSpeed = new WindSpeed($data['windSpeed'], $data['units']);
         }
 
         return $self;
     }
 
     /**
-     * @return int
+     * @return WindBearing
      */
-    public function getWindBearing(): ?int
+    public function getBearing(): ?WindBearing
     {
-        if ($this->windBearing) {
-            return $this->windBearing->toInt();
-        }
-        return null;
+        return $this->windBearing;
     }
 
     /**
-     * @return float
+     * @return WindGust
      */
-    public function getWindGust(): ?float
+    public function getGust(): ?WindGust
     {
         return $this->windGust;
     }
 
     /**
-     * @return float
+     * @return WindSpeed
      */
-    public function getWindSpeed(): ?float
+    public function getSpeed(): ?WindSpeed
     {
         return $this->windSpeed;
     }

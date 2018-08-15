@@ -4,8 +4,7 @@ declare(strict_types=1);
 namespace philwc\DarkSky\Entity;
 
 use philwc\DarkSky\EntityCollection\EntityCollection;
-use philwc\DarkSky\Value\Icon;
-use philwc\DarkSky\EntityCollection\HourlyDataPointCollection;
+use philwc\DarkSky\Value\String\Icon;
 
 /**
  * Class Period
@@ -22,7 +21,7 @@ class DataBlock extends Entity
      */
     private $icon;
     /**
-     * @var HourlyDataPointCollection
+     * @var EntityCollection
      */
     private $data;
 
@@ -53,6 +52,7 @@ class DataBlock extends Entity
         $periodDataCollection = new $collectionClass();
         foreach ($data['data'] as $dataItem) {
             $dataItem['timezone'] = $data['timezone'];
+            $dataItem['units'] = $data['units'];
             $periodDataCollection->add($class::fromArray($dataItem));
         }
         $self->data = $periodDataCollection;
@@ -79,26 +79,11 @@ class DataBlock extends Entity
     }
 
     /**
-     * @return null|string
+     * @return Icon
      */
-    public function getIconName(): ?string
+    public function getIcon(): ?Icon
     {
-        if ($this->icon) {
-            return $this->icon->toString();
-        }
-        return null;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getIcon(): ?string
-    {
-        if ($this->icon) {
-            return $this->icon->getIcon();
-        }
-
-        return null;
+        return $this->icon;
     }
 
     /**

@@ -6,6 +6,7 @@ namespace philwc\DarkSky\Client;
 use Assert\AssertionFailedException;
 use philwc\DarkSky\ClientAdapter\ClientAdapterInterface;
 use philwc\DarkSky\Entity\Weather;
+use philwc\DarkSky\Value\OptionalParameters;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\SimpleCache\CacheInterface;
@@ -48,10 +49,25 @@ abstract class Client implements LoggerAwareInterface
     /**
      * @param string $uri
      * @param int $ttl
+     * @param OptionalParameters|null $optionalParameters
      * @return Weather
      */
-    protected function makeCall(string $uri, int $ttl): ?Weather
+    protected function makeCall(string $uri, int $ttl, OptionalParameters $optionalParameters = null): ?Weather
     {
+        $urlParams = [];
+        if ($optionalParameters !== null) {
+            $urlParams = [
+                'lang' => $optionalParameters->getLang()->toString(),
+                'units' => $optionalParameters->getUnits()->toString(),
+            ];
+        }
+
+        $queryString = http_build_query($urlParams);
+
+        if ($queryString !== '') {
+            $uri .= '?' . $queryString;
+        }
+
         $cacheKey = $this->getCacheKey($uri);
 
         try {
@@ -89,9 +105,11 @@ abstract class Client implements LoggerAwareInterface
             return Weather::fromArray($data);
         } catch (\Exception $e) {
             $this->logger->error('Error validating weather data: ' . $e->getMessage());
+            $this->logger->error($e->getTraceAsString());
             return null;
         } catch (AssertionFailedException $e) {
             $this->logger->error('Error validating weather data: ' . $e->getMessage());
+            $this->logger->error($e->getTraceAsString());
             return null;
         }
     }

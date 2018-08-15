@@ -7,7 +7,9 @@ use philwc\DarkSky\DateTimeHelper;
 use philwc\DarkSky\Entity\ApparentTemperature;
 use philwc\DarkSky\Entity\DataPoint;
 use philwc\DarkSky\Entity\Temperature;
-use philwc\DarkSky\Value\MoonPhase;
+use philwc\DarkSky\Value\Float\PrecipAccumulation;
+use philwc\DarkSky\Value\Float\MoonPhase;
+use philwc\DarkSky\Value\Float\PrecipIntensityMax;
 
 /**
  * Class DailyDataPoint
@@ -27,7 +29,7 @@ class DailyDataPoint extends DataPoint
     private $moonPhase;
 
     /**
-     * @var float
+     * @var PrecipIntensityMax
      */
     private $precipIntensityMax;
 
@@ -46,7 +48,6 @@ class DailyDataPoint extends DataPoint
      */
     private $sunsetTime;
 
-
     /**
      * @var \DateTimeImmutable
      */
@@ -58,7 +59,7 @@ class DailyDataPoint extends DataPoint
     private $windGustTime;
 
     /**
-     * @var float
+     * @var PrecipAccumulation
      */
     private $precipAccumulation;
 
@@ -72,6 +73,7 @@ class DailyDataPoint extends DataPoint
      * @return DailyDataPoint
      * @throws \philwc\DarkSky\Exception\InvalidDateFieldException
      * @throws \philwc\DarkSky\Exception\MissingDataException
+     * @throws \Assert\AssertionFailedException
      */
     public static function fromArray(array $data): self
     {
@@ -86,11 +88,11 @@ class DailyDataPoint extends DataPoint
         $self->temperature = Temperature::fromArray($data);
 
         if (array_key_exists('moonPhase', $data)) {
-            $self->moonPhase = new MoonPhase($data['moonPhase']);
+            $self->moonPhase = new MoonPhase($data['moonPhase'], $data['units']);
         }
 
         if (array_key_exists('precipIntensityMax', $data)) {
-            $self->precipIntensityMax = (float)$data['precipIntensityMax'];
+            $self->precipIntensityMax = new PrecipIntensityMax($data['precipIntensityMax'], $data['units']);
         }
 
         if (array_key_exists('precipIntensityMaxTime', $data)) {
@@ -134,7 +136,7 @@ class DailyDataPoint extends DataPoint
         }
 
         if (array_key_exists('precipAccumulation', $data)) {
-            $self->precipAccumulation = (float)$data['precipAccumulation'];
+            $self->precipAccumulation = new PrecipAccumulation($data['precipAccumulation'], $data['units']);
         }
 
 
@@ -151,17 +153,17 @@ class DailyDataPoint extends DataPoint
     }
 
     /**
-     * @return float
+     * @return MoonPhase
      */
-    public function getMoonPhase(): ?float
+    public function getMoonPhase(): ?MoonPhase
     {
-        return $this->moonPhase->toFloat();
+        return $this->moonPhase;
     }
 
     /**
-     * @return float
+     * @return PrecipIntensityMax
      */
-    public function getPrecipIntensityMax(): ?float
+    public function getPrecipIntensityMax(): ?PrecipIntensityMax
     {
         return $this->precipIntensityMax;
     }
@@ -207,9 +209,9 @@ class DailyDataPoint extends DataPoint
     }
 
     /**
-     * @return float
+     * @return PrecipAccumulation
      */
-    public function getPrecipAccumulation(): ?float
+    public function getPrecipAccumulation(): ?PrecipAccumulation
     {
         return $this->precipAccumulation;
     }

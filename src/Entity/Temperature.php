@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace philwc\DarkSky\Entity;
 
 use philwc\DarkSky\DateTimeHelper;
+use philwc\DarkSky\Value\Float\Temperature as TemperatureValue;
+use philwc\DarkSky\Value\Float\TemperatureHigh;
+use philwc\DarkSky\Value\Float\TemperatureLow;
 
 /**
  * Class Temperature
@@ -12,7 +15,7 @@ use philwc\DarkSky\DateTimeHelper;
 class Temperature extends Entity
 {
     /**
-     * @var float
+     * @var TemperatureHigh
      */
     private $temperatureHigh;
 
@@ -22,7 +25,7 @@ class Temperature extends Entity
     private $temperatureHighTime;
 
     /**
-     * @var float
+     * @var TemperatureLow
      */
     private $temperatureLow;
 
@@ -32,7 +35,7 @@ class Temperature extends Entity
     private $temperatureLowTime;
 
     /**
-     * @var float
+     * @var TemperatureValue
      */
     private $temperature;
 
@@ -40,6 +43,7 @@ class Temperature extends Entity
      * @param array $data
      * @return self
      * @throws \philwc\DarkSky\Exception\InvalidDateFieldException
+     * @throws \Assert\AssertionFailedException
      */
     public static function fromArray(array $data): self
     {
@@ -49,7 +53,7 @@ class Temperature extends Entity
         $self = new self();
 
         if (array_key_exists('temperatureHigh', $data)) {
-            $self->temperatureHigh = (float)$data['temperatureHigh'];
+            $self->temperatureHigh = new TemperatureHigh($data['temperatureHigh'], $data['units']);
         }
 
         if (array_key_exists('temperatureHighTime', $data)) {
@@ -61,7 +65,7 @@ class Temperature extends Entity
         }
 
         if (array_key_exists('temperatureLow', $data)) {
-            $self->temperatureLow = (float)$data['temperatureLow'];
+            $self->temperatureLow = new TemperatureLow($data['temperatureLow'], $data['units']);
         }
 
         if (array_key_exists('temperatureLowTime', $data)) {
@@ -73,16 +77,16 @@ class Temperature extends Entity
         }
 
         if (array_key_exists('temperature', $data)) {
-            $self->temperature = (float)$data['temperature'];
+            $self->temperature = new TemperatureValue($data['temperature'], $data['units']);
         }
 
         return $self;
     }
 
     /**
-     * @return float
+     * @return TemperatureHigh
      */
-    public function getHigh(): ?float
+    public function getHigh(): ?TemperatureHigh
     {
         return $this->temperatureHigh;
     }
@@ -96,9 +100,9 @@ class Temperature extends Entity
     }
 
     /**
-     * @return float
+     * @return TemperatureLow
      */
-    public function getLow(): ?float
+    public function getLow(): ?TemperatureLow
     {
         return $this->temperatureLow;
     }
@@ -112,9 +116,9 @@ class Temperature extends Entity
     }
 
     /**
-     * @return float
+     * @return TemperatureValue
      */
-    public function getTemperature(): ?float
+    public function getTemperature(): ?TemperatureValue
     {
         return $this->temperature;
     }

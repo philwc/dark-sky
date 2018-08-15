@@ -1,6 +1,6 @@
 {
   "name": "philwc/dark-sky",
-  "description": "A simple client to talk to the Dark Sky API.",
+  "description": "A strongly typed simple client to talk to the Dark Sky API.",
   "license": "MIT",
   "type": "library",
   "require": {

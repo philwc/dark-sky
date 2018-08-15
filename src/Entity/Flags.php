@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\Entity;
 
-use philwc\DarkSky\Value\Source;
+use philwc\DarkSky\Value\Float\NearestStation;
+use philwc\DarkSky\Value\String\Source;
+use philwc\DarkSky\Value\String\Units;
 
 /**
  * Class Flags
@@ -22,12 +24,12 @@ class Flags extends Entity
     private $sources;
 
     /**
-     * @var float
+     * @var NearestStation
      */
     private $nearestStation;
 
     /**
-     * @var string
+     * @var Units
      */
     private $units;
 
@@ -47,6 +49,7 @@ class Flags extends Entity
      * @param array $data
      * @return Flags
      * @throws \philwc\DarkSky\Exception\MissingDataException
+     * @throws \Assert\AssertionFailedException
      */
     public static function fromArray(array $data): Flags
     {
@@ -54,13 +57,14 @@ class Flags extends Entity
 
         $self = new self();
 
-        $self->nearestStation = $data['nearest-station'];
+        $self->units = new Units($data['units']);
+
+        $self->nearestStation = new NearestStation($data['nearest-station'], $self->units);
 
         $self->sources = array_map(function ($source) {
             return new Source($source);
         }, $data['sources']);
 
-        $self->units = $data['units'];
 
         if (array_key_exists('darksky-unavailable', $data)) {
             $self->darkskyUnavailable = $data['darksky-unavailable'];
@@ -86,17 +90,17 @@ class Flags extends Entity
     }
 
     /**
-     * @return float
+     * @return NearestStation
      */
-    public function getNearestStation(): float
+    public function getNearestStation(): NearestStation
     {
         return $this->nearestStation;
     }
 
     /**
-     * @return string
+     * @return Units
      */
-    public function getUnits(): string
+    public function getUnits(): Units
     {
         return $this->units;
     }

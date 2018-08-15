@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace philwc\DarkSky\Entity;
 
 use philwc\DarkSky\DateTimeHelper;
+use philwc\DarkSky\Value\Float\ApparentTemperatureHigh;
+use philwc\DarkSky\Value\Float\ApparentTemperatureLow;
 
 /**
  * Class ApparentTemperature
@@ -12,7 +14,7 @@ use philwc\DarkSky\DateTimeHelper;
 class ApparentTemperature extends Entity
 {
     /**
-     * @var float
+     * @var ApparentTemperatureHigh
      */
     private $apparentTemperatureHigh;
 
@@ -22,7 +24,7 @@ class ApparentTemperature extends Entity
     private $apparentTemperatureHighTime;
 
     /**
-     * @var float
+     * @var ApparentTemperatureLow
      */
     private $apparentTemperatureLow;
 
@@ -35,6 +37,7 @@ class ApparentTemperature extends Entity
      * @param array $data
      * @return self
      * @throws \philwc\DarkSky\Exception\InvalidDateFieldException
+     * @throws \Assert\AssertionFailedException
      */
     public static function fromArray(array $data): self
     {
@@ -44,7 +47,8 @@ class ApparentTemperature extends Entity
         $self = new self();
 
         if (array_key_exists('apparentTemperatureHigh', $data)) {
-            $self->apparentTemperatureHigh = (float)$data['apparentTemperatureHigh'];
+            $self->apparentTemperatureHigh =
+                new ApparentTemperatureHigh($data['apparentTemperatureHigh'], $data['units']);
         }
 
         if (array_key_exists('apparentTemperatureHighTime', $data)) {
@@ -56,7 +60,7 @@ class ApparentTemperature extends Entity
         }
 
         if (array_key_exists('apparentTemperatureLow', $data)) {
-            $self->apparentTemperatureLow = (float)$data['apparentTemperatureLow'];
+            $self->apparentTemperatureLow = new ApparentTemperatureLow($data['apparentTemperatureLow'], $data['units']);
         }
 
         if (array_key_exists('apparentTemperatureLowTime', $data)) {
@@ -71,9 +75,9 @@ class ApparentTemperature extends Entity
     }
 
     /**
-     * @return float
+     * @return ApparentTemperatureHigh
      */
-    public function getHigh(): ?float
+    public function getHigh(): ?ApparentTemperatureHigh
     {
         return $this->apparentTemperatureHigh;
     }
@@ -87,9 +91,9 @@ class ApparentTemperature extends Entity
     }
 
     /**
-     * @return float
+     * @return ApparentTemperatureLow
      */
-    public function getLow(): ?float
+    public function getLow(): ?ApparentTemperatureLow
     {
         return $this->apparentTemperatureLow;
     }

@@ -11,8 +11,8 @@ use philwc\DarkSky\EntityCollection\DailyDataPointCollection;
 use philwc\DarkSky\EntityCollection\HourlyDataPointCollection;
 use philwc\DarkSky\EntityCollection\MinutelyDataPointCollection;
 use philwc\DarkSky\Exception\MissingDataException;
-use philwc\DarkSky\Value\Latitude;
-use philwc\DarkSky\Value\Longitude;
+use philwc\DarkSky\Value\Float\Latitude;
+use philwc\DarkSky\Value\Float\Longitude;
 use philwc\DarkSky\EntityCollection\AlertCollection;
 
 /**
@@ -37,7 +37,7 @@ class Weather extends Entity
     private $timezone;
 
     /**
-     * @var DataPoint
+     * @var CurrentlyDataPoint
      */
     private $currently;
 
@@ -79,17 +79,25 @@ class Weather extends Entity
 
         $self = new self();
 
-        $self->longitude = new Longitude($data['longitude']);
-        $self->latitude = new Latitude($data['latitude']);
+        if (array_key_exists('flags', $data)) {
+            $self->flags = Flags::fromArray($data['flags']);
+        }
+
+        $units = $self->flags->getUnits();
+
+        $self->longitude = new Longitude($data['longitude'], $units);
+        $self->latitude = new Latitude($data['latitude'], $units);
         $self->timezone = new \DateTimeZone($data['timezone']);
 
         if (array_key_exists('currently', $data)) {
             $data['currently']['timezone'] = $self->timezone;
+            $data['currently']['units'] = $units;
             $self->currently = CurrentlyDataPoint::fromArray($data['currently']);
         }
 
         if (array_key_exists('minutely', $data)) {
             $data['minutely']['timezone'] = $self->timezone;
+            $data['minutely']['units'] = $units;
             $data['minutely']['collectionClass'] = MinutelyDataPointCollection::class;
             $data['minutely']['class'] = MinutelyDataPoint::class;
             $self->minutely = DataBlock::fromArray($data['minutely']);
@@ -97,6 +105,7 @@ class Weather extends Entity
 
         if (array_key_exists('hourly', $data)) {
             $data['hourly']['timezone'] = $self->timezone;
+            $data['hourly']['units'] = $units;
             $data['hourly']['collectionClass'] = HourlyDataPointCollection::class;
             $data['hourly']['class'] = HourlyDataPoint::class;
             $self->hourly = DataBlock::fromArray($data['hourly']);
@@ -104,6 +113,7 @@ class Weather extends Entity
 
         if (array_key_exists('daily', $data)) {
             $data['daily']['timezone'] = $self->timezone;
+            $data['daily']['units'] = $units;
             $data['daily']['collectionClass'] = DailyDataPointCollection::class;
             $data['daily']['class'] = DailyDataPoint::class;
             $self->daily = DataBlock::fromArray($data['daily']);
@@ -116,10 +126,6 @@ class Weather extends Entity
                 $alertCollection->add(Alert::fromArray($alert));
             }
             $self->alerts = $alertCollection;
-        }
-
-        if (array_key_exists('flags', $data)) {
-            $self->flags = Flags::fromArray($data['flags']);
         }
 
         return $self;
@@ -138,19 +144,19 @@ class Weather extends Entity
     }
 
     /**
-     * @return float
+     * @return Longitude
      */
-    public function getLongitude(): float
+    public function getLongitude(): Longitude
     {
-        return $this->longitude->toFloat();
+        return $this->longitude;
     }
 
     /**
-     * @return float
+     * @return Latitude
      */
-    public function getLatitude(): float
+    public function getLatitude(): Latitude
     {
-        return $this->latitude->toFloat();
+        return $this->latitude;
     }
 
     /**

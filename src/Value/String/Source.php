@@ -1,15 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace philwc\DarkSky\Value;
+namespace philwc\DarkSky\Value\String;
 
 use Assert\Assertion;
+use Assert\AssertionFailedException;
 
 /**
  * Class Source
  * @package philwc\DarkSky\Value
  */
-final class Source
+final class Source extends StringValue
 {
     private const EXPECTED = [
         'cmc',
@@ -30,26 +31,19 @@ final class Source
     ];
 
     /**
-     * @var string
+     * @return string
      */
-    private $value;
-
-    /**
-     * Icon constructor.
-     * @param string $value
-     */
-    public function __construct(string $value)
+    public function getTitle(): string
     {
-        Assertion::inArray($value, self::EXPECTED);
-
-        $this->value = $value;
+        return 'Source';
     }
 
     /**
-     * @return string
+     * @throws AssertionFailedException
+     * @param mixed $value
      */
-    public function toString(): string
+    protected function assertValue($value): void
     {
-        return $this->value;
+        Assertion::inArray($value, self::EXPECTED);
     }
 }

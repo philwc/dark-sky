@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace philwc\DarkSky\Entity\DataPoint;
 
 use philwc\DarkSky\Entity\DataPoint;
+use philwc\DarkSky\Value\Float\ApparentTemperature;
 
 /**
  * Class MinutelyDataPoint
@@ -12,7 +13,7 @@ use philwc\DarkSky\Entity\DataPoint;
 class MinutelyDataPoint extends DataPoint
 {
     /**
-     * @var float
+     * @var ApparentTemperature
      */
     private $apparentTemperature;
 
@@ -21,6 +22,7 @@ class MinutelyDataPoint extends DataPoint
      * @return MinutelyDataPoint
      * @throws \philwc\DarkSky\Exception\InvalidDateFieldException
      * @throws \philwc\DarkSky\Exception\MissingDataException
+     * @throws \Assert\AssertionFailedException
      */
     public static function fromArray(array $data): self
     {
@@ -29,7 +31,7 @@ class MinutelyDataPoint extends DataPoint
         $self = new self();
 
         if (array_key_exists('apparentTemperature', $data)) {
-            $self->apparentTemperature = (float)$data['apparentTemperature'];
+            $self->apparentTemperature = new ApparentTemperature($data['apparentTemperature'], $data['units']);
         }
 
         /** @noinspection PhpIncompatibleReturnTypeInspection */
@@ -37,9 +39,9 @@ class MinutelyDataPoint extends DataPoint
     }
 
     /**
-     * @return float
+     * @return ApparentTemperature
      */
-    public function getApparentTemperature(): ?float
+    public function getApparentTemperature(): ?ApparentTemperature
     {
         return $this->apparentTemperature;
     }

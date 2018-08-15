@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/philwc/dark-sky.svg?branch=master)](https://travis-ci.org/philwc/dark-sky)
 
-This is a simple client to talk to the Dark Sky API.
+This is a strongly typed simple client to talk to the Dark Sky API.
 
 To get started, you will need to get a secret key from Dark Sky: https://darksky.net/dev/account.
 
@@ -44,8 +44,8 @@ $client = philwc\DarkSky\ClientFactory::get(
 
 $weather = $client->simpleRetrieve(53.4808, 2.2426);
 
-echo $weather->getCurrently()->getSummary() . PHP_EOL;
-echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL;
+echo $weather->getCurrently()->getSummary() . PHP_EOL; // Mostly Cloudy
+echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL; // partly-cloudy-day
 ```
 #### Time Machine Client
 
@@ -73,11 +73,12 @@ your values. Internally, `simpleRetrieve` uses `retrieve`. This may be useful if
 you want to handle invalid Latitude/Longitude further up in your code.
 
 ```php
-...
-$weather = $client->retrieve(new Latitude(53.4808), new Longitude(2.2426));
+$weather = $client->retrieve(new Latitude(53.4808), new Longitude(2.2426), new OptionalParameters(['units'=>'si', 'lang' => 'en']));
 
-echo $weather->getCurrently()->getSummary() . PHP_EOL;
-echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL;
+echo $weather->getCurrently()->getSummary() . PHP_EOL; // Mostly Cloudy
+echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL; // partly-cloudy-day
+echo $weather->getCurrently()->getTemperature()->toFloat() . PHP_EOL; // 17.71
+echo $weather->getCurrently()->getTemperature()->toString() . PHP_EOL; // 17.71 °C
 ``` 
 
 ### Advanced Usage
@@ -97,17 +98,26 @@ $client = philwc\DarkSky\ClientFactory::get(
     new Cache\Adapter\PHPArray\ArrayCachePool(), 
     new philwc\DarkSky\ClientAdapter\SimpleAdapter()
 );
+```
 
-$weather = $client->simpleRetrieve(53.4808, 2.2426);
+Once you have your client, you can pass in an array (for `simpleRetrieve`) or an instance of 
+`OptionalParameters` (for `retrieve`) to customise the values you get back from DarkSky.
 
-echo $weather->getCurrently()->getSummary() . PHP_EOL;
-echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL;
+```php
+$weather = $client->simpleRetrieve(53.4808, 2.2426, ['units'=>'si', 'lang' => 'en']);
+
+echo $weather->getCurrently()->getSummary() . PHP_EOL; // Mostly Cloudy
+echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL; // partly-cloudy-day
+echo $weather->getCurrently()->getTemperature()->toFloat() . PHP_EOL; // 17.71
+echo $weather->getCurrently()->getTemperature()->toString() . PHP_EOL; // 17.71 °C
 
 // This second call will now be retrieved from the cache
-$weather = $client->simpleRetrieve(53.4808, 2.2426);
+$weather = $client->simpleRetrieve(53.4808, 2.2426, ['units'=>'si', 'lang' => 'en']);
 
-echo $weather->getCurrently()->getSummary() . PHP_EOL;
-echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL;
+echo $weather->getCurrently()->getSummary() . PHP_EOL; // Mostly Cloudy
+echo $weather->getCurrently()->getIcon()->toString() . PHP_EOL; // partly-cloudy-day
+echo $weather->getCurrently()->getTemperature()->toFloat() . PHP_EOL; // 17.71
+echo $weather->getCurrently()->getTemperature()->toString() . PHP_EOL; // 17.71 °C
 ```
 
 ### Caching

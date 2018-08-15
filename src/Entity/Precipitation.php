@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\Entity;
 
-use philwc\DarkSky\Value\PrecipProbability;
-use philwc\DarkSky\Value\PrecipType;
+use philwc\DarkSky\Value\Float\PrecipIntensity;
+use philwc\DarkSky\Value\Float\PrecipIntensityError;
+use philwc\DarkSky\Value\Float\PrecipProbability;
+use philwc\DarkSky\Value\String\PrecipType;
 
 /**
  * Class Precipitation
@@ -13,12 +15,12 @@ use philwc\DarkSky\Value\PrecipType;
 class Precipitation extends Entity
 {
     /**
-     * @var float
+     * @var PrecipIntensity
      */
     private $precipIntensity;
 
     /**
-     * @var float
+     * @var PrecipIntensityError
      */
     private $precipIntensityError;
 
@@ -35,21 +37,22 @@ class Precipitation extends Entity
     /**
      * @param array $data
      * @return mixed
+     * @throws \Assert\AssertionFailedException
      */
     public static function fromArray(array $data)
     {
         $self = new self();
 
         if (array_key_exists('precipIntensity', $data)) {
-            $self->precipIntensity = (float)$data['precipIntensity'];
+            $self->precipIntensity = new PrecipIntensity($data['precipIntensity'], $data['units']);
         }
 
         if (array_key_exists('precipIntensityError', $data)) {
-            $self->precipIntensityError = (float)$data['precipIntensityError'];
+            $self->precipIntensityError = new PrecipIntensityError($data['precipIntensityError'], $data['units']);
         }
 
         if (array_key_exists('precipProbability', $data)) {
-            $self->precipProbability = new PrecipProbability($data['precipProbability']);
+            $self->precipProbability = new PrecipProbability($data['precipProbability'], $data['units']);
         }
 
         if (array_key_exists('precipType', $data)) {
@@ -60,40 +63,34 @@ class Precipitation extends Entity
     }
 
     /**
-     * @return float
+     * @return PrecipIntensity
      */
-    public function getIntensity(): ?float
+    public function getIntensity(): ?PrecipIntensity
     {
         return $this->precipIntensity;
     }
 
     /**
-     * @return float
+     * @return PrecipIntensityError
      */
-    public function getIntensityError(): ?float
+    public function getIntensityError(): ?PrecipIntensityError
     {
         return $this->precipIntensityError;
     }
 
     /**
-     * @return float
+     * @return PrecipProbability
      */
-    public function getProbability(): ?float
+    public function getProbability(): ?PrecipProbability
     {
-        if ($this->precipProbability) {
-            return $this->precipProbability->toFloat();
-        }
-        return null;
+        return $this->precipProbability;
     }
 
     /**
-     * @return string
+     * @return PrecipType
      */
-    public function getType(): ?string
+    public function getType(): ?PrecipType
     {
-        if ($this->precipType) {
-            return $this->precipType->toString();
-        }
-        return null;
+        return $this->precipType;
     }
 }

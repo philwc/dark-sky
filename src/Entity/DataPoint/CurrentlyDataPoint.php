@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\Entity\DataPoint;
 
+use philwc\DarkSky\Value\Float\ApparentTemperature;
 use philwc\DarkSky\Entity\DataPoint;
-use philwc\DarkSky\Entity\Storm;
+use philwc\DarkSky\Entity\NearestStorm;
+use philwc\DarkSky\Value\Float\Temperature;
 
 /**
  * Class CurrentlyDataPoint
@@ -13,17 +15,17 @@ use philwc\DarkSky\Entity\Storm;
 class CurrentlyDataPoint extends DataPoint
 {
     /**
-     * @var Storm
+     * @var NearestStorm
      */
-    private $storm;
+    private $nearestStorm;
 
     /**
-     * @var float
+     * @var ApparentTemperature
      */
     private $apparentTemperature;
 
     /**
-     * @var float
+     * @var Temperature
      */
     private $temperature;
 
@@ -32,20 +34,21 @@ class CurrentlyDataPoint extends DataPoint
      * @return CurrentlyDataPoint
      * @throws \philwc\DarkSky\Exception\InvalidDateFieldException
      * @throws \philwc\DarkSky\Exception\MissingDataException
+     * @throws \Assert\AssertionFailedException
      */
     public static function fromArray(array $data): self
     {
         self::validate($data, self::getRequiredFields());
 
         $self = new self();
-        $self->storm = Storm::fromArray($data);
+        $self->nearestStorm = NearestStorm::fromArray($data);
 
         if (array_key_exists('apparentTemperature', $data)) {
-            $self->apparentTemperature = (float)$data['apparentTemperature'];
+            $self->apparentTemperature = new ApparentTemperature($data['apparentTemperature'], $data['units']);
         }
 
         if (array_key_exists('temperature', $data)) {
-            $self->temperature = (float)$data['temperature'];
+            $self->temperature = new Temperature($data['temperature'], $data['units']);
         }
 
         /** @noinspection PhpIncompatibleReturnTypeInspection */
@@ -53,26 +56,26 @@ class CurrentlyDataPoint extends DataPoint
     }
 
     /**
-     * @return float
+     * @return ApparentTemperature
      */
-    public function getApparentTemperature(): ?float
+    public function getApparentTemperature(): ?ApparentTemperature
     {
         return $this->apparentTemperature;
     }
 
     /**
-     * @return float
+     * @return Temperature
      */
-    public function getTemperature(): ?float
+    public function getTemperature(): ?Temperature
     {
         return $this->temperature;
     }
 
     /**
-     * @return Storm
+     * @return NearestStorm
      */
-    public function getStorm(): Storm
+    public function getNearestStorm(): NearestStorm
     {
-        return $this->storm;
+        return $this->nearestStorm;
     }
 }

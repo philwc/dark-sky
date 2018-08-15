@@ -5,10 +5,14 @@ namespace philwc\DarkSky\Entity;
 
 use philwc\DarkSky\DateTimeHelper;
 use philwc\DarkSky\Exception\InvalidDateFieldException;
-use philwc\DarkSky\Value\CloudCover;
-use philwc\DarkSky\Value\Humidity;
-use philwc\DarkSky\Value\Icon;
-use philwc\DarkSky\Value\Visibility;
+use philwc\DarkSky\Value\Float\CloudCover;
+use philwc\DarkSky\Value\Float\DewPoint;
+use philwc\DarkSky\Value\Float\Humidity;
+use philwc\DarkSky\Value\Float\Ozone;
+use philwc\DarkSky\Value\Float\Pressure;
+use philwc\DarkSky\Value\Int\UvIndex;
+use philwc\DarkSky\Value\String\Icon;
+use philwc\DarkSky\Value\Float\Visibility;
 
 /**
  * Class DataPoint
@@ -21,7 +25,7 @@ abstract class DataPoint extends Entity
      */
     private $cloudCover;
     /**
-     * @var float
+     * @var DewPoint
      */
     private $dewPoint;
     /**
@@ -35,12 +39,12 @@ abstract class DataPoint extends Entity
     private $icon;
 
     /**
-     * @var float
+     * @var Ozone
      */
     private $ozone;
 
     /**
-     * @var float
+     * @var Pressure
      */
     private $pressure;
 
@@ -55,7 +59,7 @@ abstract class DataPoint extends Entity
     private $time;
 
     /**
-     * @var int
+     * @var UvIndex
      */
     private $uvIndex;
 
@@ -87,6 +91,7 @@ abstract class DataPoint extends Entity
      * @param array $data
      * @return DataPoint
      * @throws InvalidDateFieldException
+     * @throws \Assert\AssertionFailedException
      */
     protected static function extend(DataPoint $self, array $data): DataPoint
     {
@@ -94,15 +99,15 @@ abstract class DataPoint extends Entity
         $self->wind = Wind::fromArray($data);
 
         if (array_key_exists('cloudCover', $data)) {
-            $self->cloudCover = new CloudCover($data['cloudCover']);
+            $self->cloudCover = new CloudCover($data['cloudCover'], $data['units']);
         }
 
         if (array_key_exists('dewPoint', $data)) {
-            $self->dewPoint = (float)$data['dewPoint'];
+            $self->dewPoint = new DewPoint($data['dewPoint'], $data['units']);
         }
 
         if (array_key_exists('humidity', $data)) {
-            $self->humidity = new Humidity($data['humidity']);
+            $self->humidity = new Humidity($data['humidity'], $data['units']);
         }
 
         if (array_key_exists('icon', $data)) {
@@ -110,11 +115,11 @@ abstract class DataPoint extends Entity
         }
 
         if (array_key_exists('ozone', $data)) {
-            $self->ozone = (float)$data['ozone'];
+            $self->ozone = new Ozone($data['ozone'], $data['units']);
         }
 
         if (array_key_exists('pressure', $data)) {
-            $self->pressure = (float)$data['pressure'];
+            $self->pressure = new Pressure($data['pressure'], $data['units']);
         }
 
         if (array_key_exists('summary', $data)) {
@@ -122,11 +127,11 @@ abstract class DataPoint extends Entity
         }
 
         if (array_key_exists('uvIndex', $data)) {
-            $self->uvIndex = (int)$data['uvIndex'];
+            $self->uvIndex = new UvIndex($data['uvIndex'], $data['units']);
         }
 
         if (array_key_exists('visibility', $data)) {
-            $self->visibility = new Visibility($data['visibility']);
+            $self->visibility = new Visibility($data['visibility'], $data['units']);
         }
 
         /** @var \DateTimeZone $timezone */
@@ -137,70 +142,49 @@ abstract class DataPoint extends Entity
     }
 
     /**
-     * @return float
+     * @return CloudCover
      */
-    public function getCloudCover(): ?float
+    public function getCloudCover(): ?CloudCover
     {
-        if ($this->cloudCover) {
-            return $this->cloudCover->toFloat();
-        }
-        return null;
+        return $this->cloudCover;
     }
 
     /**
-     * @return float
+     * @return DewPoint
      */
-    public function getDewPoint(): ?float
+    public function getDewPoint(): ?DewPoint
     {
         return $this->dewPoint;
     }
 
     /**
-     * @return float
+     * @return Humidity
      */
-    public function getHumidity(): ?float
+    public function getHumidity(): ?Humidity
     {
-        if ($this->humidity) {
-            return $this->humidity->toFloat();
-        }
-        return null;
+        return $this->humidity;
     }
 
     /**
-     * @return null|string
+     * @return Icon
      */
-    public function getIconName(): ?string
+    public function getIcon(): ?Icon
     {
-        if ($this->icon) {
-            return $this->icon->toString();
-        }
-        return null;
+        return $this->icon;
     }
 
     /**
-     * @return null|string
+     * @return Ozone
      */
-    public function getIcon(): ?string
-    {
-        if ($this->icon) {
-            return $this->icon->getIcon();
-        }
-
-        return null;
-    }
-
-    /**
-     * @return float
-     */
-    public function getOzone(): ?float
+    public function getOzone(): ?Ozone
     {
         return $this->ozone;
     }
 
     /**
-     * @return float
+     * @return Pressure
      */
-    public function getPressure(): ?float
+    public function getPressure(): ?Pressure
     {
         return $this->pressure;
     }
@@ -222,22 +206,19 @@ abstract class DataPoint extends Entity
     }
 
     /**
-     * @return int
+     * @return UvIndex
      */
-    public function getUvIndex(): ?int
+    public function getUvIndex(): ?UvIndex
     {
         return $this->uvIndex;
     }
 
     /**
-     * @return float
+     * @return Visibility
      */
-    public function getVisibility(): ?float
+    public function getVisibility(): ?Visibility
     {
-        if ($this->visibility) {
-            return $this->visibility->toFloat();
-        }
-        return null;
+        return $this->visibility;
     }
 
     /**

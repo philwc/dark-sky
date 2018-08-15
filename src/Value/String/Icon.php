@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace philwc\DarkSky\Value;
+namespace philwc\DarkSky\Value\String;
 
 /**
  * Class Icon
  * @package philwc\DarkSky\Value
  */
-final class Icon
+final class Icon extends StringValue
 {
     private const ICON_MAP = [
         'clear-day' => '🌣',
@@ -23,28 +23,6 @@ final class Icon
     ];
 
     /**
-     * @var string
-     */
-    private $value;
-
-    /**
-     * Icon constructor.
-     * @param string $value
-     */
-    public function __construct(string $value)
-    {
-        $this->value = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function toString(): string
-    {
-        return $this->value;
-    }
-
-    /**
      * @return string
      */
     public function getIcon(): string
@@ -54,5 +32,21 @@ final class Icon
         }
 
         return '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return '';
+    }
+
+    /**
+     * @param mixed $value
+     */
+    protected function assertValue($value): void
+    {
+        // noop
     }
 }
