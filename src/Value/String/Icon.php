@@ -37,6 +37,14 @@ final class Icon extends StringValue
     /**
      * @return string
      */
+    public function toString(): string
+    {
+        return $this->getIcon();
+    }
+
+    /**
+     * @return string
+     */
     public function getTitle(): string
     {
         return '';
