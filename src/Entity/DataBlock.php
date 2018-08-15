@@ -5,6 +5,7 @@ namespace philwc\DarkSky\Entity;
 
 use philwc\DarkSky\EntityCollection\EntityCollection;
 use philwc\DarkSky\Value\String\Icon;
+use philwc\DarkSky\Value\String\Summary;
 
 /**
  * Class Period
@@ -13,7 +14,7 @@ use philwc\DarkSky\Value\String\Icon;
 class DataBlock extends Entity
 {
     /**
-     * @var string
+     * @var Summary
      */
     private $summary;
     /**
@@ -38,7 +39,7 @@ class DataBlock extends Entity
         $self = new self();
 
         if (array_key_exists('summary', $data)) {
-            $self->summary = $data['summary'];
+            $self->summary = new Summary($data['summary']);
         }
 
         if (array_key_exists('icon', $data)) {
@@ -71,9 +72,9 @@ class DataBlock extends Entity
     }
 
     /**
-     * @return string
+     * @return Summary
      */
-    public function getSummary(): ?string
+    public function getSummary(): ?Summary
     {
         return $this->summary;
     }

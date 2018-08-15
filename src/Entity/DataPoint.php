@@ -14,6 +14,7 @@ use philwc\DarkSky\Value\Float\Pressure;
 use philwc\DarkSky\Value\Int\UvIndex;
 use philwc\DarkSky\Value\String\Icon;
 use philwc\DarkSky\Value\Float\Visibility;
+use philwc\DarkSky\Value\String\Summary;
 
 /**
  * Class DataPoint
@@ -50,7 +51,7 @@ abstract class DataPoint extends Entity
     private $pressure;
 
     /**
-     * @var string
+     * @var Summary
      */
     private $summary;
 
@@ -124,7 +125,7 @@ abstract class DataPoint extends Entity
         }
 
         if (array_key_exists('summary', $data)) {
-            $self->summary = $data['summary'];
+            $self->summary = new Summary($data['summary']);
         }
 
         if (array_key_exists('uvIndex', $data)) {
@@ -191,9 +192,9 @@ abstract class DataPoint extends Entity
     }
 
     /**
-     * @return string
+     * @return Summary
      */
-    public function getSummary(): ?string
+    public function getSummary(): ?Summary
     {
         return $this->summary;
     }
