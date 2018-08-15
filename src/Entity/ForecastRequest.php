@@ -11,24 +11,9 @@ use philwc\DarkSky\Value\OptionalParameters;
  * Class ForecastRequest
  * @package philwc\DarkSky\Entity
  */
-class ForecastRequest extends Entity implements RequestInterface
+class ForecastRequest extends Request
 {
     private const URI = 'https://api.darksky.net/forecast/%s/%s,%s?%s';
-
-    /**
-     * @var Latitude
-     */
-    private $latitude;
-
-    /**
-     * @var Longitude
-     */
-    private $longitude;
-
-    /**
-     * @var OptionalParameters
-     */
-    private $optionalParameters;
 
     /**
      * @param array $data
@@ -63,6 +48,10 @@ class ForecastRequest extends Entity implements RequestInterface
             $self->optionalParameters = new OptionalParameters();
         }
 
+        if (array_key_exists('locationdescription', $data)) {
+            $self->locationDescription = $data['locationdescription'];
+        }
+
         return $self;
     }
 
@@ -75,30 +64,6 @@ class ForecastRequest extends Entity implements RequestInterface
             'longitude',
             'latitude',
         ];
-    }
-
-    /**
-     * @return Latitude
-     */
-    public function getLatitude(): Latitude
-    {
-        return $this->latitude;
-    }
-
-    /**
-     * @return Longitude
-     */
-    public function getLongitude(): Longitude
-    {
-        return $this->longitude;
-    }
-
-    /**
-     * @return OptionalParameters
-     */
-    public function getOptionalParameters(): OptionalParameters
-    {
-        return $this->optionalParameters;
     }
 
     /**

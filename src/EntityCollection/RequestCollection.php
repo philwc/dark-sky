@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\EntityCollection;
 
-use philwc\DarkSky\Entity\RequestInterface;
+use philwc\DarkSky\Entity\Request;
 
 /**
  * Class RequestCollection
@@ -24,6 +24,6 @@ class RequestCollection extends EntityCollection
      */
     protected function getEntityClass(): string
     {
-        return RequestInterface::class;
+        return Request::class;
     }
 }

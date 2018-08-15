@@ -7,7 +7,6 @@ use Assert\AssertionFailedException;
 use GuzzleHttp\Psr7\Request;
 use philwc\DarkSky\ClientAdapter\ClientAdapterInterface;
 use philwc\DarkSky\Entity\ForecastRequest;
-use philwc\DarkSky\Entity\RequestInterface;
 use philwc\DarkSky\Entity\TimeMachineRequest;
 use philwc\DarkSky\Entity\Weather;
 use philwc\DarkSky\EntityCollection\RequestCollection;
@@ -90,13 +89,13 @@ class Client implements LoggerAwareInterface
     }
 
     /**
-     * @param RequestInterface|RequestCollection $requests
+     * @param \philwc\DarkSky\Entity\Request|RequestCollection $requests
      * @return Weather|WeatherCollection
      * @throws AssertionFailedException
      */
     public function retrieve($requests)
     {
-        if ($requests instanceof RequestInterface) {
+        if ($requests instanceof \philwc\DarkSky\Entity\Request) {
             $forecastRequestCollection = new RequestCollection();
             /** @noinspection PhpParamsInspection */
             $forecastRequestCollection->add($requests);
@@ -123,7 +122,7 @@ class Client implements LoggerAwareInterface
     private function getRequests(RequestCollection $requestCollection): callable
     {
         return function () use ($requestCollection) {
-            /** @var RequestInterface $request */
+            /** @var \philwc\DarkSky\Entity\Request $request */
             foreach ($requestCollection as $request) {
                 $uri = $request->getUri($this->secretKey);
 
@@ -218,10 +217,10 @@ class Client implements LoggerAwareInterface
     }
 
     /**
-     * @param RequestInterface $request
+     * @param \philwc\DarkSky\Entity\Request $request
      * @return int
      */
-    private function getTTL(RequestInterface $request): int
+    private function getTTL(\philwc\DarkSky\Entity\Request $request): int
     {
         if ($request instanceof ForecastRequest) {
             return $this->forecastTTL;

@@ -11,29 +11,14 @@ use philwc\DarkSky\Value\OptionalParameters;
  * Class TimeMachineRequest
  * @package philwc\DarkSky\Entity
  */
-class TimeMachineRequest extends Entity implements RequestInterface
+class TimeMachineRequest extends Request
 {
     private const URI = 'https://api.darksky.net/forecast/%s/%s,%s,%s?%s';
-
-    /**
-     * @var Latitude
-     */
-    private $latitude;
-
-    /**
-     * @var Longitude
-     */
-    private $longitude;
 
     /**
      * @var \DateTimeImmutable
      */
     private $dateTime;
-
-    /**
-     * @var OptionalParameters
-     */
-    private $optionalParameters;
 
     /**
      * @param array $data
@@ -75,6 +60,10 @@ class TimeMachineRequest extends Entity implements RequestInterface
             $self->optionalParameters = new OptionalParameters();
         }
 
+        if (array_key_exists('locationdescription', $data)) {
+            $self->locationDescription = $data['locationdescription'];
+        }
+
         return $self;
     }
 
@@ -91,35 +80,11 @@ class TimeMachineRequest extends Entity implements RequestInterface
     }
 
     /**
-     * @return Latitude
-     */
-    public function getLatitude(): Latitude
-    {
-        return $this->latitude;
-    }
-
-    /**
-     * @return Longitude
-     */
-    public function getLongitude(): Longitude
-    {
-        return $this->longitude;
-    }
-
-    /**
      * @return \DateTimeImmutable
      */
     public function getDateTime(): \DateTimeImmutable
     {
         return $this->dateTime;
-    }
-
-    /**
-     * @return OptionalParameters
-     */
-    public function getOptionalParameters(): OptionalParameters
-    {
-        return $this->optionalParameters;
     }
 
     /**
