@@ -41,7 +41,7 @@ abstract class DateTimeImmutableValue extends Value
      */
     public function toString(): string
     {
-        return $this->value->format('l, jS, F Y');
+        return $this->value->format('l, jS, F Y H:i:s');
     }
 
     /**
