@@ -9,6 +9,7 @@ To get started, you will need to get a secret key from Dark Sky: https://darksky
 This package makes use of HTTP adapters to connect to the API. Two are included out of the box,
 a Guzzle adapter and a Simple adapter (using `file_get_contents`). If you have specialised
 connection needs, simply implement the `ClientAdapterInterface` and pass to the client factory. 
+
 If a ClientAdapter is not specified, the package will make use of the `GuzzleAdapter` if 
 [Guzzle](http://guzzlephp.org/) is available, falling back to the `SimpleAdapter` (using `file_get_contents`)
 if not.
