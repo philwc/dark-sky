@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\ClientAdapter;
 
-use Psr\Http\Message\ResponseInterface;
-
 /**
  * Interface ClientAdapterInterface
  * @package philwc\DarkSky\ClientAdapter
@@ -12,8 +10,9 @@ use Psr\Http\Message\ResponseInterface;
 interface ClientAdapterInterface
 {
     /**
-     * @param $uri
-     * @return ResponseInterface
+     * @param callable $requests
+     * @param callable $fulfulled
+     * @param callable $rejected
      */
-    public function get($uri): ResponseInterface;
+    public function getMulti(callable $requests, callable $fulfulled, callable $rejected): void;
 }

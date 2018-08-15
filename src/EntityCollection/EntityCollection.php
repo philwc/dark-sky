@@ -10,6 +10,29 @@ use philwc\DarkSky\Entity\EntityInterface;
 /**
  * Class EntityCollection
  * @package philwc\DarkSky\EntityCollection
+ * @method allocate(int $capacity)
+ * @method apply(callable $callback)
+ * @method capacity(): int
+ * @method contains(...$values): bool
+ * @method filter(callable $callback = null): Sequence
+ * @method find($value)
+ * @method get(int $index)
+ * @method insert(int $index, ...$values)
+ * @method join(string $glue = null): string
+ * @method pop()
+ * @method push(...$values)
+ * @method reduce(callable $callback, $initial = null)
+ * @method remove(int $index)
+ * @method reverse()
+ * @method reversed()
+ * @method rotate(int $rotations)
+ * @method set(int $index, $value)
+ * @method shift()
+ * @method slice(int $index, int $length = null): Sequence
+ * @method sort(callable $comparator = null)
+ * @method sorted(callable $comparator = null): Sequence
+ * @method sum()
+ * @method unshift(...$values)
  */
 abstract class EntityCollection implements \IteratorAggregate, \ArrayAccess
 {

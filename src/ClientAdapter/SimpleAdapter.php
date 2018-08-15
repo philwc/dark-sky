@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace philwc\DarkSky\ClientAdapter;
 
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use philwc\DarkSky\Exception\DarkSkyException;
 use Psr\Http\Message\ResponseInterface;
@@ -13,15 +14,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class SimpleAdapter implements ClientAdapterInterface
 {
-
     /**
-     * @param $uri
+     * @param Request $request
      * @return ResponseInterface
      * @throws DarkSkyException
      */
-    public function get($uri): ResponseInterface
+    private function get(Request $request): ResponseInterface
     {
-        $body = file_get_contents($uri);
+        $body = file_get_contents((string)$request->getUri());
 
         $parsedHeaders = [];
         $statusCode = 0;
@@ -45,5 +45,22 @@ class SimpleAdapter implements ClientAdapterInterface
         }
 
         return new Response($statusCode, $parsedHeaders, $body);
+    }
+
+    /**
+     * @param callable $requests
+     * @param callable $fulfulled
+     * @param callable $rejected
+     */
+    public function getMulti(callable $requests, callable $fulfulled, callable $rejected): void
+    {
+        /** @var Request $request */
+        foreach ($requests() as $key => $request) {
+            try {
+                $fulfulled($this->get($request), $key);
+            } catch (DarkSkyException $e) {
+                $rejected($e->getMessage(), $key);
+            }
+        }
     }
 }

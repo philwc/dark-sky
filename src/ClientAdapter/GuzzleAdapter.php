@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace philwc\DarkSky\ClientAdapter;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use philwc\DarkSky\Exception\DarkSkyException;
-use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Pool;
 
 /**
  * Class GuzzleAdapter
@@ -29,20 +27,19 @@ class GuzzleAdapter implements ClientAdapterInterface
     }
 
     /**
-     * @param $uri
-     * @return ResponseInterface
-     * @throws DarkSkyException
+     * @param callable $requests
+     * @param callable $fulfulled
+     * @param callable $rejected
+     * @return array|void
      */
-    public function get($uri): ResponseInterface
+    public function getMulti(callable $requests, callable $fulfulled, callable $rejected): void
     {
-        try {
-            return $this->client->request('GET', $uri);
-        } catch (GuzzleException $e) {
-            throw new DarkSkyException(
-                'Error calling DarkSky forecast endpoint: ' . $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
+        $pool = new Pool($this->client, $requests(), [
+            'concurrency' => 5,
+            'fulfilled' => $fulfulled,
+            'rejected' => $rejected,
+        ]);
+
+        $pool->promise()->wait();
     }
 }
