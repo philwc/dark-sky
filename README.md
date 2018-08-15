@@ -1,28 +1,24 @@
 # Dark Sky API Client
+## A strongly typed simple client to talk to the Dark Sky API.
 
 [![Build Status](https://travis-ci.org/philwc/dark-sky.svg?branch=master)](https://travis-ci.org/philwc/dark-sky)
 
-This is a strongly typed simple client to talk to the Dark Sky API.
+### Getting Started
 
 To get started, you will need to get a secret key from Dark Sky: https://darksky.net/dev/account.
+
+### Client Adapters
 
 This package makes use of HTTP adapters to connect to the API. Two are included out of the box,
 a Guzzle adapter and a Simple adapter (using `file_get_contents`). If you have specialised
 connection needs, simply implement the `ClientAdapterInterface` and pass to the client factory. 
+
 If a ClientAdapter is not specified, the package will make use of the `GuzzleAdapter` if 
 [Guzzle](http://guzzlephp.org/) is available, falling back to the `SimpleAdapter` (using `file_get_contents`)
 if not.
 
 If a guzzle adapter is provided (or the implemented `ClientAdapterInterface` supports it), multiple
 requests will be made concurrently. 
-
-This package is also able to make use of a PSR-16 caching adapter to cache calls from the API.
-Simply pass a relevant cache service (see https://packagist.org/providers/psr/simple-cache-implementation) 
-to the client factory to use. No caching is provided out of the box.
-
-Finally, this is able to make use of a PSR-3 logger. Set your logger using `ClientFactory::setLogger($log);`.
-
-This is all shown in the [Advanced Usage](#advanced-usage) section below.
 
 ## Usage
 
@@ -58,7 +54,7 @@ echo $weather->getCurrently()->getTemperature()->toString() . PHP_EOL; // 17.71 
 ``` 
 
 ### Advanced Usage
-It is possible to pass both a PSR-16 cache adapter, as well as a PSR-3 logger into the `ClientFactory`
+It is possible to pass both a PSR-16 cache adapter, as well as a PSR-3 logger into the `ClientFactory`:
 
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
@@ -102,7 +98,11 @@ echo $weather->getCurrently()->getTemperature()->toString() . PHP_EOL; // 17.71 
 
 ### Caching
 
-It is possible to set the TTL for the cache independently for each client. On the client, 
+This package is also able to make use of a PSR-16 caching adapter to cache calls from the API.
+Simply pass a relevant cache service (see https://packagist.org/providers/psr/simple-cache-implementation) 
+to the client factory to use. No caching is provided out of the box.
+
+It is possible to set the TTL for the cache independently for each request type. On the client, 
 use `setForecastTTL` or `setTimeMachineTTL` to specify. By default, the following TTLs are set:
 
 - `ForecastClient` - 60s
