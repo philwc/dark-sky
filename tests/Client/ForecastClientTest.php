@@ -7,7 +7,6 @@ use philwc\DarkSky\ClientAdapter\NullClientAdapter;
 use philwc\DarkSky\Entity\Weather;
 use philwc\DarkSky\Value\Float\Latitude;
 use philwc\DarkSky\Value\Float\Longitude;
-use philwc\DarkSky\Value\String\Units;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
@@ -93,6 +92,9 @@ class ForecastClientTest extends TestCase
         $this->assertInstanceOf(Weather::class, $weather);
     }
 
+    /**
+     * @throws \Assert\AssertionFailedException
+     */
     public function testSimpleRetrieve(): void
     {
         $clientAdapter = new NullClientAdapter(file_get_contents(__DIR__ . '/../data/forecast.json'));

@@ -75,6 +75,7 @@ class TimeMachineClientTest extends TestCase
 {
     /**
      * @throws \Exception
+     * @throws \Assert\AssertionFailedException
      */
     public function testRetrieve(): void
     {
@@ -94,6 +95,7 @@ class TimeMachineClientTest extends TestCase
 
     /**
      * @throws \Exception
+     * @throws \Assert\AssertionFailedException
      */
     public function testSimpleRetrieve(): void
     {

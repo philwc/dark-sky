@@ -5,6 +5,8 @@ namespace philwc\DarkSky\Entity;
 
 use philwc\DarkSky\DateTimeHelper;
 use philwc\DarkSky\Exception\InvalidDateFieldException;
+use philwc\DarkSky\Value\DateTimeImmutable\Expires;
+use philwc\DarkSky\Value\DateTimeImmutable\Time;
 
 /**
  * Class Alert
@@ -28,12 +30,12 @@ class Alert extends Entity
     private $severity;
 
     /**
-     * @var \DateTimeImmutable
+     * @var Time
      */
     private $time;
 
     /**
-     * @var \DateTimeImmutable
+     * @var Expires
      */
     private $expires;
 
@@ -81,8 +83,8 @@ class Alert extends Entity
         /** @var \DateTimeZone $timezone */
         $timezone = $data['timezone'];
 
-        $self->time = DateTimeHelper::getDateTimeImmutable($data, 'time', $timezone);
-        $self->expires = DateTimeHelper::getDateTimeImmutable($data, 'expires', $timezone);
+        $self->time = new Time(DateTimeHelper::getDateTimeImmutable($data, 'time', $timezone));
+        $self->expires = new Expires(DateTimeHelper::getDateTimeImmutable($data, 'expires', $timezone));
         $self->description = $data['description'];
         $self->uri = $data['uri'];
 
@@ -114,17 +116,17 @@ class Alert extends Entity
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return Time
      */
-    public function getTime(): \DateTimeImmutable
+    public function getTime(): Time
     {
         return $this->time;
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return Expires
      */
-    public function getExpires(): \DateTimeImmutable
+    public function getExpires(): Expires
     {
         return $this->expires;
     }

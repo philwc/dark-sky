@@ -39,7 +39,7 @@ final class CloudCover extends FloatValue
     /**
      * @return float
      */
-    public function getValue()
+    public function getValue(): float
     {
         return parent::getValue() * 100;
     }

@@ -5,6 +5,7 @@ namespace philwc\DarkSky\Entity;
 
 use philwc\DarkSky\DateTimeHelper;
 use philwc\DarkSky\Exception\InvalidDateFieldException;
+use philwc\DarkSky\Value\DateTimeImmutable\Time;
 use philwc\DarkSky\Value\Float\CloudCover;
 use philwc\DarkSky\Value\Float\DewPoint;
 use philwc\DarkSky\Value\Float\Humidity;
@@ -54,7 +55,7 @@ abstract class DataPoint extends Entity
     private $summary;
 
     /**
-     * @var \DateTimeImmutable
+     * @var Time
      */
     private $time;
 
@@ -136,7 +137,7 @@ abstract class DataPoint extends Entity
 
         /** @var \DateTimeZone $timezone */
         $timezone = $data['timezone'];
-        $self->time = DateTimeHelper::getDateTimeImmutable($data, 'time', $timezone);
+        $self->time = new Time(DateTimeHelper::getDateTimeImmutable($data, 'time', $timezone));
 
         return $self;
     }
@@ -198,9 +199,9 @@ abstract class DataPoint extends Entity
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return Time
      */
-    public function getTime(): \DateTimeImmutable
+    public function getTime(): Time
     {
         return $this->time;
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace philwc\DarkSky\Entity;
 
 use philwc\DarkSky\DateTimeHelper;
+use philwc\DarkSky\Value\DateTimeImmutable\ApparentTemperatureHighTime;
+use philwc\DarkSky\Value\DateTimeImmutable\ApparentTemperatureLowTime;
 use philwc\DarkSky\Value\Float\ApparentTemperatureHigh;
 use philwc\DarkSky\Value\Float\ApparentTemperatureLow;
 
@@ -19,7 +21,7 @@ class ApparentTemperature extends Entity
     private $apparentTemperatureHigh;
 
     /**
-     * @var \DateTimeImmutable
+     * @var ApparentTemperatureHighTime
      */
     private $apparentTemperatureHighTime;
 
@@ -29,7 +31,7 @@ class ApparentTemperature extends Entity
     private $apparentTemperatureLow;
 
     /**
-     * @var \DateTimeImmutable
+     * @var ApparentTemperatureLowTime
      */
     private $apparentTemperatureLowTime;
 
@@ -52,10 +54,12 @@ class ApparentTemperature extends Entity
         }
 
         if (array_key_exists('apparentTemperatureHighTime', $data)) {
-            $self->apparentTemperatureHighTime = DateTimeHelper::getDateTimeImmutable(
-                $data,
-                'apparentTemperatureHighTime',
-                $timezone
+            $self->apparentTemperatureHighTime = new ApparentTemperatureHighTime(
+                DateTimeHelper::getDateTimeImmutable(
+                    $data,
+                    'apparentTemperatureHighTime',
+                    $timezone
+                )
             );
         }
 
@@ -64,10 +68,12 @@ class ApparentTemperature extends Entity
         }
 
         if (array_key_exists('apparentTemperatureLowTime', $data)) {
-            $self->apparentTemperatureLowTime = DateTimeHelper::getDateTimeImmutable(
-                $data,
-                'apparentTemperatureLowTime',
-                $timezone
+            $self->apparentTemperatureLowTime = new ApparentTemperatureLowTime(
+                DateTimeHelper::getDateTimeImmutable(
+                    $data,
+                    'apparentTemperatureLowTime',
+                    $timezone
+                )
             );
         }
 
@@ -83,9 +89,9 @@ class ApparentTemperature extends Entity
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return ApparentTemperatureHighTime
      */
-    public function getHighTime(): ?\DateTimeImmutable
+    public function getHighTime(): ?ApparentTemperatureHighTime
     {
         return $this->apparentTemperatureHighTime;
     }
@@ -99,9 +105,9 @@ class ApparentTemperature extends Entity
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return ApparentTemperatureLowTime
      */
-    public function getLowTime(): ?\DateTimeImmutable
+    public function getLowTime(): ?ApparentTemperatureLowTime
     {
         return $this->apparentTemperatureLowTime;
     }

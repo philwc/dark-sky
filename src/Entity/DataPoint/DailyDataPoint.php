@@ -7,6 +7,11 @@ use philwc\DarkSky\DateTimeHelper;
 use philwc\DarkSky\Entity\ApparentTemperature;
 use philwc\DarkSky\Entity\DataPoint;
 use philwc\DarkSky\Entity\Temperature;
+use philwc\DarkSky\Value\DateTimeImmutable\PrecipIntensityMaxTime;
+use philwc\DarkSky\Value\DateTimeImmutable\SunriseTime;
+use philwc\DarkSky\Value\DateTimeImmutable\SunsetTime;
+use philwc\DarkSky\Value\DateTimeImmutable\UvIndexTime;
+use philwc\DarkSky\Value\DateTimeImmutable\WindGustTime;
 use philwc\DarkSky\Value\Float\PrecipAccumulation;
 use philwc\DarkSky\Value\Float\MoonPhase;
 use philwc\DarkSky\Value\Float\PrecipIntensityMax;
@@ -34,27 +39,27 @@ class DailyDataPoint extends DataPoint
     private $precipIntensityMax;
 
     /**
-     * @var \DateTimeImmutable
+     * @var PrecipIntensityMaxTime
      */
     private $precipIntensityMaxTime;
 
     /**
-     * @var \DateTimeImmutable
+     * @var SunriseTime
      */
     private $sunriseTime;
 
     /**
-     * @var \DateTimeImmutable
+     * @var SunsetTime
      */
     private $sunsetTime;
 
     /**
-     * @var \DateTimeImmutable
+     * @var UvIndexTime
      */
     private $uvIndexTime;
 
     /**
-     * @var \DateTimeImmutable
+     * @var WindGustTime
      */
     private $windGustTime;
 
@@ -96,42 +101,52 @@ class DailyDataPoint extends DataPoint
         }
 
         if (array_key_exists('precipIntensityMaxTime', $data)) {
-            $self->precipIntensityMaxTime = DateTimeHelper::getDateTimeImmutable(
-                $data,
-                'precipIntensityMaxTime',
-                $timezone
+            $self->precipIntensityMaxTime = new PrecipIntensityMaxTime(
+                DateTimeHelper::getDateTimeImmutable(
+                    $data,
+                    'precipIntensityMaxTime',
+                    $timezone
+                )
             );
         }
 
         if (array_key_exists('sunriseTime', $data)) {
-            $self->sunriseTime = DateTimeHelper::getDateTimeImmutable(
-                $data,
-                'sunriseTime',
-                $timezone
+            $self->sunriseTime = new SunriseTime(
+                DateTimeHelper::getDateTimeImmutable(
+                    $data,
+                    'sunriseTime',
+                    $timezone
+                )
             );
         }
 
         if (array_key_exists('sunsetTime', $data)) {
-            $self->sunsetTime = DateTimeHelper::getDateTimeImmutable(
-                $data,
-                'sunsetTime',
-                $timezone
+            $self->sunsetTime = new SunsetTime(
+                DateTimeHelper::getDateTimeImmutable(
+                    $data,
+                    'sunsetTime',
+                    $timezone
+                )
             );
         }
 
         if (array_key_exists('uvIndexTime', $data)) {
-            $self->uvIndexTime = DateTimeHelper::getDateTimeImmutable(
-                $data,
-                'uvIndexTime',
-                $timezone
+            $self->uvIndexTime = new UvIndexTime(
+                DateTimeHelper::getDateTimeImmutable(
+                    $data,
+                    'uvIndexTime',
+                    $timezone
+                )
             );
         }
 
         if (array_key_exists('windGustTime', $data)) {
-            $self->windGustTime = DateTimeHelper::getDateTimeImmutable(
-                $data,
-                'windGustTime',
-                $timezone
+            $self->windGustTime = new WindGustTime(
+                DateTimeHelper::getDateTimeImmutable(
+                    $data,
+                    'windGustTime',
+                    $timezone
+                )
             );
         }
 
@@ -169,41 +184,41 @@ class DailyDataPoint extends DataPoint
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return PrecipIntensityMaxTime
      */
-    public function getPrecipIntensityMaxTime(): ?\DateTimeImmutable
+    public function getPrecipIntensityMaxTime(): ?PrecipIntensityMaxTime
     {
         return $this->precipIntensityMaxTime;
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return SunriseTime
      */
-    public function getSunriseTime(): ?\DateTimeImmutable
+    public function getSunriseTime(): ?SunriseTime
     {
         return $this->sunriseTime;
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return SunsetTime
      */
-    public function getSunsetTime(): ?\DateTimeImmutable
+    public function getSunsetTime(): ?SunsetTime
     {
         return $this->sunsetTime;
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return UvIndexTime
      */
-    public function getUvIndexTime(): ?\DateTimeImmutable
+    public function getUvIndexTime(): ?UvIndexTime
     {
         return $this->uvIndexTime;
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return WindGustTime
      */
-    public function getWindGustTime(): ?\DateTimeImmutable
+    public function getWindGustTime(): ?WindGustTime
     {
         return $this->windGustTime;
     }

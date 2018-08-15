@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace philwc\DarkSky\Entity;
 
 use philwc\DarkSky\DateTimeHelper;
+use philwc\DarkSky\Value\DateTimeImmutable\HighTime;
+use philwc\DarkSky\Value\DateTimeImmutable\LowTime;
 use philwc\DarkSky\Value\Float\Temperature as TemperatureValue;
 use philwc\DarkSky\Value\Float\TemperatureHigh;
 use philwc\DarkSky\Value\Float\TemperatureLow;
@@ -20,7 +22,7 @@ class Temperature extends Entity
     private $temperatureHigh;
 
     /**
-     * @var \DateTimeImmutable
+     * @var HighTime
      */
     private $temperatureHighTime;
 
@@ -30,7 +32,7 @@ class Temperature extends Entity
     private $temperatureLow;
 
     /**
-     * @var \DateTimeImmutable
+     * @var LowTime
      */
     private $temperatureLowTime;
 
@@ -57,10 +59,12 @@ class Temperature extends Entity
         }
 
         if (array_key_exists('temperatureHighTime', $data)) {
-            $self->temperatureHighTime = DateTimeHelper::getDateTimeImmutable(
-                $data,
-                'temperatureHighTime',
-                $timezone
+            $self->temperatureHighTime = new HighTime(
+                DateTimeHelper::getDateTimeImmutable(
+                    $data,
+                    'temperatureHighTime',
+                    $timezone
+                )
             );
         }
 
@@ -69,10 +73,12 @@ class Temperature extends Entity
         }
 
         if (array_key_exists('temperatureLowTime', $data)) {
-            $self->temperatureLowTime = DateTimeHelper::getDateTimeImmutable(
-                $data,
-                'temperatureLowTime',
-                $timezone
+            $self->temperatureLowTime = new LowTime(
+                DateTimeHelper::getDateTimeImmutable(
+                    $data,
+                    'temperatureLowTime',
+                    $timezone
+                )
             );
         }
 
@@ -92,9 +98,9 @@ class Temperature extends Entity
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return HighTime
      */
-    public function getHighTime(): ?\DateTimeImmutable
+    public function getHighTime(): ?HighTime
     {
         return $this->temperatureHighTime;
     }
@@ -108,9 +114,9 @@ class Temperature extends Entity
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return LowTime
      */
-    public function getLowTime(): ?\DateTimeImmutable
+    public function getLowTime(): ?LowTime
     {
         return $this->temperatureLowTime;
     }
