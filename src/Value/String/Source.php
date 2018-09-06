@@ -27,7 +27,8 @@ final class Source extends StringValue
         'nam',
         'nwspa',
         'sref',
-        'nearest-precip'
+        'nearest-precip',
+        'meteoalarm'
     ];
 
     /**
